@@ -16,12 +16,12 @@ import java.awt.event.MouseEvent;
 
 public class UserGraphicsInterface extends JFrame implements ActionListener {
 
-    private int HEIGHT = 700;
-    private int WIDTH = 500;
+    private final int HEIGHT = 900;
+    private final int WIDTH = 700;
     private int Yaxis = 100;
     private int Xaxis = 500;
     private JButton start, confirmButton, cancelButton;
-    JScrollPane scrollPane;
+    private Font f = new Font("Comic Sans MS", Font.BOLD, 18);
 
     public UserGraphicsInterface(){
         this.initialising();
@@ -37,11 +37,9 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         this.setLocation(Xaxis, Yaxis);
         this.setResizable(false);
 
-        start();
+        this.add(start());
 
-        BackgroundPanel bgPanel = new BackgroundPanel();
-        bgPanel.setBounds(0, 0, WIDTH, HEIGHT);
-        this.add(bgPanel);
+        background();
 
         this.setVisible(true);
     }
@@ -59,95 +57,138 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         start.addActionListener(this);
 
         panel.add(start);
-        this.add(panel);
 
         return panel;
     }
 
-    private JPanel FoodMenu() {
+    public JScrollPane foodCategory(){
+        JPanel categoryPanel = new JPanel();
+
+        categoryView(categoryPanel);
+
+        for (int repeat = 1; repeat <= 18; repeat++){
+            categoryPanel.add(thumbnail("hamburger.jpeg"));
+            categoryPanel.add(new JLabel("Hello"));
+            categoryPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        }
+
+        JScrollPane catScroll = new JScrollPane(categoryPanel);
+        catScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        catScroll.getVerticalScrollBar().setUnitIncrement(20);
+
+        return catScroll;
+    }
+
+    private JPanel menu() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(WIDTH, HEIGHT);
 
-        JPanel headerPanel = new JPanel();
-        JPanel middlePanel = new JPanel();
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-
-        // Settings the header panel
-        JLabel headerLabel = new JLabel("FOOD MENU");
-        headerLabel.setBorder(BorderFactory.createEmptyBorder(11, 0, 0, 0));
-        headerLabel.setFont(new Font("New Time Roman", Font.BOLD, 18));
-        headerPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT - 640));
-        headerPanel.setBackground(Color.WHITE);
-        headerPanel.add(headerLabel);
-
-        int numItems = 0;
-        for (int i = 0; i < 10; i++) {
-            numItems = i; //getting the total number of panel
-            JPanel foodPanel = foodCard(null, "Burger", 3.50);
-            middlePanel.add(foodPanel);
-        }
-
-        //re-calculate the size when the number of panel increase
-        int rows = (int) Math.ceil(numItems / 4.0);
-        int panelHeight = rows * 235;
-
-        middlePanel.setPreferredSize(new Dimension(WIDTH - 25, panelHeight));
-
-        scrollPane = new JScrollPane(middlePanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-
-        cancelButton = new CustomButton("Cancel", "#bf0c0c", "#ffc600", "#e76a05");
-        confirmButton = new CustomButton("Confirm", "#bf0c0c", "#ffc600", "#e76a05");
-
-        cancelButton.setPreferredSize(new Dimension(220,40));
-        confirmButton.setPreferredSize(new Dimension(220,40));
 
         mainPanel.setBackground(Color.WHITE);
-        middlePanel.setBackground(Color.WHITE);
-        bottomPanel.setBackground(Color.WHITE);
 
-        bottomPanel.setPreferredSize(new Dimension(WIDTH, HEIGHT - 600));
-        bottomPanel.add(cancelButton);
-        bottomPanel.add(confirmButton);
-
-        // add all the panel to the main panel then return it
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
-
-        cancelButton.addActionListener(this);
-        confirmButton.addActionListener(this);
+        mainPanel.add(header(), BorderLayout.NORTH);
+        mainPanel.add(foodCategory(), BorderLayout.WEST);
+        mainPanel.add(foodDisplay(), BorderLayout.CENTER);
+        mainPanel.add(buttonContainer(), BorderLayout.SOUTH);
 
         return mainPanel;
     }
 
-    private JPanel foodCard(Image image, String name, Double price) {
-        JPanel foodPanel = new JPanel();
-        foodPanel.setLayout(new BoxLayout(foodPanel,BoxLayout.Y_AXIS));
-        foodPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+    private JPanel header(){
+        JPanel headerPanel = new JPanel();
+        headerPanel.setPreferredSize(new Dimension(WIDTH, 100));
+        headerPanel.setBackground(Color.WHITE);
 
-        JPanel imagePanel = new JPanel(new FlowLayout());;
-        if (image != null) {
-            imagePanel.setPreferredSize(new Dimension(WIDTH / 4, HEIGHT - 560));
-        } else {
-            imagePanel.setPreferredSize(new Dimension(WIDTH / 4, HEIGHT - 580));
-            imagePanel.setBackground(Color.gray);
+
+        JLabel headerLabel = new JLabel("FOOD MENU");
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+        headerLabel.setFont(f);
+
+        headerPanel.add(headerLabel);
+        return headerPanel;
+    }
+
+    private JScrollPane foodDisplay(){
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+
+        int numItems = 0;
+
+        for (int i = 0; i < 10; i++) {
+            numItems = i; //getting the total number of panel
+            JPanel fc = foodCard(null, "Burger", 3.50);
+            panel.add(fc);
         }
 
+        //re-calculate the size when the number of panel increase
+        int rows = numItems;
+        int panelHeight = rows * 235;
+        panel.setLayout(new GridLayout(5, 6));
+
+        panel.setPreferredSize(new Dimension(WIDTH, panelHeight));
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+
+        return scrollPane;
+    }
+
+    public JPanel buttonContainer(){
+        int btnWidth = 220;
+        int btnHeight = 40;
+        Dimension d = new Dimension(btnWidth, btnHeight);
+
+        JPanel bottomPanel = new JPanel(new FlowLayout());
+
+        cancelButton = new CustomButton("Cancel", "#bf0c0c", "#ffc600", "#e76a05");
+        confirmButton = new CustomButton("Confirm", "#bf0c0c", "#ffc600", "#e76a05");
+
+        cancelButton.setPreferredSize(d);
+        confirmButton.setPreferredSize(d);
+
+        bottomPanel.setBackground(Color.WHITE);
+
+        bottomPanel.setPreferredSize(new Dimension(WIDTH, 100));
+        bottomPanel.add(cancelButton);
+        bottomPanel.add(confirmButton);
+
+        cancelButton.addActionListener(this);
+        confirmButton.addActionListener(this);
+
+        return bottomPanel;
+    }
+
+    private JPanel foodCard(String imagePath, String name, Double price) {
+
+        JPanel foodCardLayout = new JPanel();
+        foodCardLayout.setLayout(new BoxLayout(foodCardLayout,BoxLayout.Y_AXIS));
+        foodCardLayout.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+
         JLabel foodName = new JLabel("Name: " + name);
-        foodPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 10));
+        foodCardLayout.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 10));
 
         JLabel foodPrice = new JLabel("Price: " + String.valueOf(price));
-        foodPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 10));
+        foodCardLayout.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 10));
 
-        foodPanel.add(imagePanel,BorderLayout.NORTH);
-        foodPanel.add(foodName, BorderLayout.CENTER);
-        foodPanel.add(foodPrice, BorderLayout.SOUTH);
+        foodCardLayout.add(thumbnail("hamburger.jpeg"),BorderLayout.NORTH);
+        foodCardLayout.add(foodName, BorderLayout.CENTER);
+        foodCardLayout.add(foodPrice, BorderLayout.SOUTH);
 
-        foodPanel.setBackground(Color.WHITE);
-        return foodPanel;
+        foodCardLayout.setBackground(Color.WHITE);
+        return foodCardLayout;
     }
+
+    // Utilities
+    private JLabel thumbnail(String source){
+        String rsc = "resource\\images\\" + source;
+        ImageIcon img = new ImageIcon(rsc);
+        JLabel thumbnail = new JLabel();
+        thumbnail.setIcon(img);
+        thumbnail.setPreferredSize(new Dimension(WIDTH / 4, 100));
+        return thumbnail;
+    }
+
     public void switchPanel(JPanel panel) {
         this.getContentPane().removeAll();
         this.getContentPane().add(panel);
@@ -155,16 +196,25 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         this.repaint();
     }
 
+    public void background(){
+        BackgroundPanel bgPanel = new BackgroundPanel();
+        bgPanel.setBounds(0, 0, WIDTH, HEIGHT);
+        this.add(bgPanel);
+    }
+
+    private void categoryView(JPanel target){
+        target.setLayout(new BoxLayout(target, BoxLayout.Y_AXIS));
+        target.setBorder(BorderFactory.createEmptyBorder(11, 30, 11, 11));
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == start){
-            switchPanel(FoodMenu());
+            switchPanel(menu());
             System.out.println("Switched to Food Menu!");
         } else if (e.getSource() == cancelButton) {
             switchPanel(start());
-            BackgroundPanel bgPanel = new BackgroundPanel();
-            bgPanel.setBounds(0, 0, WIDTH, HEIGHT);
-            this.add(bgPanel);
+            background();
             System.out.println("Switched to Home Menu!");
         }
     }
@@ -181,9 +231,9 @@ class BackgroundPanel extends JPanel {
     }
 }
 class CustomButton extends JButton {
-    private Color normalColor;
-    private Color hoverColor;
-    private Color clickColor;
+    private final Color normalColor;
+    private final Color hoverColor;
+    private final Color clickColor;
 
     public CustomButton(String text, String hexMaintone, String hexHovertone, String hexClicktone) {
         super(text);
@@ -191,7 +241,7 @@ class CustomButton extends JButton {
         hoverColor = Color.decode(hexHovertone);
         clickColor = Color.decode(hexClicktone);
 
-        setFont(new Font("Arial", Font.BOLD, 18));
+        setFont(new Font("Comic Sans MS", Font.BOLD, 18));
         setForeground(Color.WHITE);
         setBackground(normalColor);
 
