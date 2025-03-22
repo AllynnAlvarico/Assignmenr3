@@ -65,12 +65,25 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
     public JScrollPane foodCategory(){
         JPanel categoryPanel = new JPanel();
+        String filepath = "categories\\";
+        String[] categories = {
+                "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Eurosaver Menu", "Happy Meal",
+                "Fries & Sides", "Desserts", "Milkshakes & Cold Drinks", "Vegan", "Vegetarian",
+                "McCafe", "Breakfast Menu", "Wraps and Salads", "Condiments & Sauces"};
+        String[] imagesource = {
+                "whatsnew", "sharer", "burger", "mcnuggets", "eurosaver", "happymeal", "fries", "desserts",
+                "drinks", "vegan", "vegetarian", "mccafe", "breakfast","wraps", "condiments"};
 
         categoryView(categoryPanel);
+        JButton btnCategory;
 
-        for (int repeat = 1; repeat <= 18; repeat++){
-            categoryPanel.add(thumbnail("hamburger.jpeg"));
-            categoryPanel.add(new JLabel(repeat + " Hello"));
+        for (int repeat = 0; repeat < categories.length; repeat++){
+            btnCategory = thumbnail(filepath + imagesource[repeat] + ".jpeg");
+            btnCategory.setActionCommand("*" + categories[repeat]);
+            btnCategory.addActionListener(this);
+
+            categoryPanel.add(btnCategory);
+            categoryPanel.add(new JLabel(categories[repeat]));
             categoryPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
 
@@ -87,7 +100,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
 
         mainPanel.setBackground(Color.WHITE);
-
         mainPanel.add(header(), BorderLayout.NORTH);
         mainPanel.add(foodCategory(), BorderLayout.WEST);
         mainPanel.add(foodDisplay(), BorderLayout.CENTER);
@@ -167,9 +179,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         JLabel foodName = new JLabel("Name: " + name);
         JLabel foodPrice = new JLabel("Price: " + price);
 
-//        JButton selectButton = new JButton("Add to Basket");
-//        selectButton.setActionCommand(name + "," + price); // Unique command
-//        selectButton.addActionListener(this);
         JButton product = thumbnail("hamburger.jpeg");
         product.setActionCommand(name + "," + price);
         product.addActionListener(this);
@@ -192,11 +201,18 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         thumbnail.setPreferredSize(new Dimension(WIDTH / 4, 100));
         thumbnail.setBackground(Color.WHITE);
         thumbnail.setFocusable(false);
-
+        //thumbnail.addActionListener(this);
         return thumbnail;
     }
 
     public void switchPanel(JPanel panel) {
+        this.getContentPane().removeAll();
+        this.getContentPane().add(panel);
+        this.revalidate();
+        this.repaint();
+    }
+    public void switchFoodPanel(JPanel panel) {
+
         this.getContentPane().removeAll();
         this.getContentPane().add(panel);
         this.revalidate();
@@ -226,6 +242,8 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             background();
             System.out.println("Switched to Home Menu!");
         } else if(cmd != null && cmd.contains(",")){
+            System.out.println(cmd);
+        } else if (cmd != null && cmd.contains("*")) {
             System.out.println(cmd);
         }
     }
