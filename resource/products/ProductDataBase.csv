@@ -1,0 +1,98 @@
+pkey,name,category,price,prepTime,path
+1,The Stormzy Meal,What's New,12.3,4,The Stormzy Meal
+2,Philly Cheese Stack,What's New,8.1,4,Philly Cheese Stack
+3,McCrispy BBQ Smokehouse,What's New,8.4,3,McCrispy BBQ Smokehouse
+4,The Katsu Chicken One Grilled,What's New,6.3,4,The Katsu Chicken One Grilled
+5,The Katsu Chicken One Crispy,What's New,6.3,4,The Katsu Chicken One Crispy
+6,Mozzarella Dippers,What's New,4,3,Mozzarella Dippers
+7,Mozzarella Dippers Sharebox,What's New,8.7,3,Mozzarella Dippers Sharebox
+8,Mar McFlurry,What's New,4.1,2,Mar McFlurry
+9,Mar Mini McFlurry,What's New,3.4,2,Mar Mini McFlurry
+10,Shamrock Shake,What's New,4.3,2,Shamrock Shake
+11,Raspberry and White Chocolate Pie,What's New,2.8,3,Raspberry and White Chocolate Pie
+12,Mozzarella Dippers Sharebox,Sharers & Bundles,8.7,3,Mozzarella Dippers Sharebox
+13,Chicken Sharebox,Sharers & Bundles,1,1,ChickenSharebox
+14,9 Chicken Selects Sharebox,Sharers & Bundles,1,1,9CSS
+15,20 Chicken McNuggets Sharebox,Sharers & Bundles,1,1,20CMS
+16,Philly Cheese Stack,Burgers,8.1,4,Philly Cheese Stack
+17,McCrispy BBQ Smokehouse,Burgers,8.4,3,McCrispy BBQ Smokehouse
+18,McSpicy,Burgers,1,2,McSpicy
+19,McPlant,Burgers,1,2,McPlant
+20,Big Mac,Burgers,1,5,Big Mac
+21,Quarter Pounder with Cheese,Burgers,2,5,QPC
+22,Double Quarter Pouder with Cheese,Burgers,1,5,DQPC
+23,Fillet-o-Fish,Burgers,2,4,FF
+24,McCrispy,Burgers,1,3,Mcrispy
+25,McChicken Sandwich,Burgers,5,4,MCSandwich
+26,Vegetable Deluxe,Burgers,5,4,VegeDe
+27,Mozzarella Dippers Sharebox,McNuggets and Selects,8.7,3,Mozzarella Dippers Sharebox
+28,McDonald's Chicken Sharebox,McNuggets and Selects,1,1,Mozzarella Dippers Sharebox
+29,9 Chicken Selects Sharebox,McNuggets and Selects,1,1,9CSS
+30,Chicken McNuggets Sharebox,McNuggets and Selects,1,1,20CMS
+31,Mozzarella Dippers,McNuggets and Selects,4,1,Mozzarella Dippers
+32,Chicken Selects,McNuggets and Selects,4,8,Chicken Selects
+33,9 Pieces Chicken McNuggets,McNuggets and Selects,2,8,9pcm
+34,6 Pieces Chicken McNuggets,McNuggets and Selects,2,8,6pcm
+35,Veggie Dippers - 4 pieces,McNuggets and Selects,2,8,vd4p
+36,The Katsu Chicken One Grilled,Wraps and Salads,6.3,4,The Katsu Chicken One Grilled
+37,The Katsu Chicken One Crispy,Wraps and Salads,6.3,4,The Katsu Chicken One Crispy
+38,Sweet Chilli Chicken  - Grilled,Wraps and Salads,6.3,4,tsccoGrilled
+39,Sweet Chilli Chicken  - Crispy,Wraps and Salads,6.3,4,tsccoCrispy
+40,Ceasar & Bacon Chicken - Grilled,Wraps and Salads,6.3,4,tcbcGrilled
+41,Ceasar & Bacon Chicken - Crispy,Wraps and Salads,6.3,4,tcbcCrispy
+42,BBQ and Bacon Chicken - Grilled,Wraps and Salads,6.3,4,bbqbcGrilled
+43,BBQ and Bacon Chicken - Crispy,Wraps and Salads,6.3,4,bbqbcCrispy
+44,The Spicy Veggie ,Wraps and Salads,5.3,4,tsVeggie
+45,Grilled Chicken and Bacon Salad,Wraps and Salads,10,6,saladCBGrilled
+46,Grilled Chicken Salad,Wraps and Salads,1,6,GrilledcSalad
+47,Crispy Chicken & Bacon Salad,Wraps and Salads,2,6,ccbs
+48,Crispy Chicken Salad,Wraps and Salads,3,6,ccs
+49,Side Salad,Wraps and Salads,4,6,sidesalad
+50,Toffee Latte,McCafe,1,6,toffeelatte
+51,Flat White,McCafe,1,6,flatwhite
+52,Latte,McCafe,1,6,latte
+53,Cappuccino,McCafe,1,6,cappuccino
+54,White Coffee,McCafe,1,6,whitecoffee
+55,Americano,McCafe,1,6,americano
+56,Espresso,McCafe,1,6,espresso
+57,Hot Chocolate,McCafe,1,6,hotchocolate
+58,Tea,McCafe,1,6,tea
+59,Ice Latte,McCafe,1,6,icelatte
+60,Frozen Strawberry Lemonade,McCafe,4.1,3,Frozen Strawberry Lemonade
+61,Caramel Iced Frappe,McCafe,3.6,3,Caramel Iced Frappe
+62,Mango & Pineapple Smoothie,McCafe,4.1,3,Mango & Pineapple Smoothie
+63,Hamburger,Burgers,1.9,2,Hamburger
+64,Cheeseburger,Burgers,2.2,2,Cheeseburger
+65,Double Cheeseburger,Burgers,3.2,2,Double Cheeseburger
+66,Bacon Double Cheeseburger,Burgers,3.9,2,Bacon Double Cheeseburger
+67,Triple Cheeseburger,Burgers,3.9,2,Triple Cheeseburger
+68,Bacon Mayo Chicken,Burgers,3.1,2,Bacon Mayo Chicken
+69,Mayo Chicken,Burgers,2.2,2,Mayo Chicken
+70,Hamburger,Eurosaver Menu,1.9,2,Hamburger
+71,Cheeseburger,Eurosaver Menu,2.2,2,Cheeseburger
+72,Double Cheeseburger,Eurosaver Menu,3.2,2,Double Cheeseburger
+73,Bacon Double Cheeseburger,Eurosaver Menu,3.9,2,Bacon Double Cheeseburger
+74,Triple Cheeseburger,Eurosaver Menu,3.9,2,Triple Cheeseburger
+75,Bacon Mayo Chicken,Eurosaver Menu,3.1,2,Bacon Mayo Chicken
+76,Mayo Chicken,Eurosaver Menu,2.2,2,Mayo Chicken
+77,Large Fries,Fries and Sides,4.1,1,Large Fries
+78,Medium Fries,Fries & Sides,3.7,1,Medium Fries
+79,Small Fries,Fries & Sides,3.3,1,Small Fries
+80,Mozzarella Dippers,Fries & Sides,4,1,Mozzarella Dippers
+81,Coca-Cola Zero,Milkshakes & Cold Drinks,2.8,1,Coca Cola Zero
+82,Coca-Cola Classic,Milkshakes & Cold Drinks,3.5,1,Coca Cola Classic
+83,Diet Coke,Milkshakes & Cold Drinks,3.4,1,Diet Coke
+84,Sprite Zero,Milkshakes & Cold Drinks,3.4,1,Sprite Zero
+85,Fanta Orange Zero,Milkshakes & Cold Drinks,3.4,1,Fanta Orange Zero
+86,Caramel Iced Frappe,Milkshakes & Cold Drinks,3.6,3,Caramel Iced Frappe
+87,Semi Skimmed Milk 250ml,Milkshakes & Cold Drinks,2.2,1,Semi Skimmed Milk 250ml
+88,Deep RiverRock 250ml,Milkshakes & Cold Drinks,2.2,1,Deep RiverRock 250ml
+89,Deep RiverRock,Milkshakes & Cold Drinks,2.5,1,Deep RiverRock
+90,Frozen Strawberry Lemonade,Milkshakes & Cold Drinks,4.1,3,Frozen Strawberry Lemonade
+91,Mango & Pineapple Smoothie,Milkshakes & Cold Drinks,4.1,3,Mango & Pineapple Smoothie
+92,Chocolate Milkshake,Milkshakes & Cold Drinks,4.9,2,Chocolate Milkshake
+93,Strawberry Milkshake,Milkshakes & Cold Drinks,4.9,2,Strawberry Milkshake
+94,Vanilla Milkshake,Milkshakes & Cold Drinks,4.9,2,Vanilla Milkshake
+95,Tropicana Apple Juice,Milkshakes & Cold Drinks,2.5,1,Tropicana Apple Juice
+96,Tropicana Orange Juice,Milkshakes & Cold Drinks,2.5,1,Tropicana Orange Juice
+97,Robinson Fruit Shoot,Milkshakes & Cold Drinks,2.2,1,Robinson Fruit Shoot
