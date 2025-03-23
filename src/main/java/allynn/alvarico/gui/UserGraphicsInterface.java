@@ -55,7 +55,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
     private JPanel start() {
         JPanel panel = new JPanel();
-        panel.setBounds(160, 450, 400, 200);
+        panel.setBounds(160, 650, 400, 200);
         panel.setLayout(null);
         panel.setOpaque(false);
         panel.setBackground(new Color(0,0,0,0));

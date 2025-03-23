@@ -10,6 +10,6 @@ public class BackgroundPanel extends JPanel {
         Image image = new ImageIcon("resource\\images\\background.png").getImage();
         Image icon = new ImageIcon("resource\\images\\icon.png").getImage();
         g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
-        g.drawImage(icon, 275, 330, this);
+        g.drawImage(icon, 275, 400, this);
     }
 }

@@ -96,3 +96,8 @@ pkey,name,category,price,prepTime,path
 95,Tropicana Apple Juice,Milkshakes & Cold Drinks,2.5,1,Tropicana Apple Juice
 96,Tropicana Orange Juice,Milkshakes & Cold Drinks,2.5,1,Tropicana Orange Juice
 97,Robinson Fruit Shoot,Milkshakes & Cold Drinks,2.2,1,Robinson Fruit Shoot
+98,Hamburger Meal,Happy Meal,5,6,HMBurger
+99,Cheeseburger Meal,Happy Meal,5,6,HMCBurger
+100,Chicken McNuggets Meal,Happy Meal,5,6,HMNugget
+101,Fish Finger Meal,Happy Meal,5,6,HMFF
+102,Happy Meal Veggie Dippers ,Happy Meal,5,6,HMVD
