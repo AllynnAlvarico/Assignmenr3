@@ -172,7 +172,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         JTextField amount = new JTextField("1", 3);
         amount.setHorizontalAlignment(JTextField.CENTER);
 
-        addToCart.setActionCommand(addToCart.getText());
+        addToCart.setActionCommand(addToCart.getText() + byRef_product.productID());
         goBack.setActionCommand(goBack.getText());
         add.setActionCommand(add.getText());
         minus.setActionCommand(minus.getText());
@@ -196,7 +196,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         for (Product p : products) {
             if (p == byRef_product) {
                 JPanel fc = foodCard("foodcard\\" + p.path(), p.productName(), p.productPrice(), String.valueOf(p), false);
-
                 fc.setPreferredSize(new Dimension(100, 100));
                 imagePanel.add(fc, BorderLayout.CENTER);
             }
@@ -316,14 +315,13 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         target.setPreferredSize(new Dimension(200, HEIGHT * 2));
     }
 
-    private Product searchProduct(String item){
+    private Product searchProduct(String actionCommand){
         Product itemSearch = null;
         for (Product p: products) {
-            if (item.equals(p.productID() + "," + p.productName())){
+            if (actionCommand.equals(p.productID() + "," + p.productName())){
                 itemSearch = p;
             }
         }
-
         return itemSearch;
 
     }
@@ -331,6 +329,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
+        String temp;
         String selectedCategory = cmd.substring(1);
         if (e.getSource() == start){
             switchPanel(menu(categories[0]));
@@ -343,20 +342,24 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             Product p = searchProduct(cmd);
             if(p != null){
                 switchPanel(menuCart(p.category(), p));
-                System.out.println(p);
             }
-
-            //System.out.println(cmd);
+            System.out.println(cmd);
         } else if (cmd.contains("*")) {
 
             switchPanel(menu(selectedCategory));
             System.out.println(selectedCategory);
         } else if (e.getSource() == addToCart) {
-//            orderedItems.addToBasket(p);
-            System.out.println("prep time is " + orderedItems.getTotalPrepTime());
-            System.out.println("total amount € " + orderedItems.getTotalPrice());
-            System.out.println("Hello");
-            System.out.println(orderedItems.size());
+            for (Product p: products){
+                String number = String.valueOf(p.productID());
+                if (cmd.contains(number)){
+                    orderedItems.addToBasket(p);
+//                    System.out.println(number);
+                    System.out.println("prep time is " + orderedItems.getTotalPrepTime());
+                    System.out.println("total amount € " + orderedItems.getTotalPrice());
+//                    System.out.println(cmd.substring(11));
+//                    System.out.println(orderedItems.size());
+                }
+            }
         }
     }
 }
