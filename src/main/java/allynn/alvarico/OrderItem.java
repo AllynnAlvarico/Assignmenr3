@@ -71,4 +71,7 @@ public class OrderItem extends ArrayList<Product> {
         System.out.println("Total Price: " + this.getTotalPrice());
         System.out.println("Total Prep Time: " + this.getTotalPrepTime());
     }
+    public ArrayList<Product> customerBasket(){
+        return this;
+    }
 }

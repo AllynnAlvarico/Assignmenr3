@@ -1,6 +1,8 @@
 package allynn.alvarico.gui;
 
+import allynn.alvarico.OrderItem;
 import allynn.alvarico.customs.BackgroundPanel;
+import allynn.alvarico.customs.CartCustomButtons;
 import allynn.alvarico.customs.CustomButton;
 import allynn.alvarico.product.Product;
 
@@ -22,18 +24,19 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     private final int WIDTH = 720;
     private int Yaxis = 50;
     private int Xaxis = 650;
-    private JButton start, confirmButton, cancelButton;
+    private JButton start, confirmButton, cancelButton, addToCart, goBack, add, minus;
     private Font f = new Font("Comic Sans MS", Font.BOLD, 18);
     private final ArrayList<Product> products;
+    private final OrderItem orderedItems;
     String[] categories = {
-            "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Eurosaver Menu", "Happy Meal",
-            "Fries & Sides", "Desserts", "Milkshakes & Cold Drinks", "Vegan", "Vegetarian",
-            "McCafe", "Breakfast Menu", "Wraps and Salads", "Condiments & Sauces"};
+            "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Wraps and Salads",
+            "McCafe", "Breakfast Menu", "Vegetarian", "Vegan", "Eurosaver Menu", "Happy Meal",
+            "Fries & Sides", "Desserts", "Milkshakes & Cold Drinks", "Condiments & Sauces"};
 
-    public UserGraphicsInterface(ArrayList<Product> byRef_products) {
+    public UserGraphicsInterface(ArrayList<Product> byRef_products, OrderItem byRef_orderedItems) {
         this.products = byRef_products;
+        this.orderedItems = byRef_orderedItems;
         this.initialising();
-
     }
 
     private void initialising(){
@@ -75,7 +78,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         mainPanel.setSize(WIDTH, HEIGHT);
 
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.add(header(), BorderLayout.NORTH);
+        mainPanel.add(header(selectedCategory), BorderLayout.NORTH);
         mainPanel.add(foodCategory(), BorderLayout.WEST);
         mainPanel.add(foodDisplay(selectedCategory), BorderLayout.CENTER);
         mainPanel.add(buttonContainer(), BorderLayout.SOUTH);
@@ -83,13 +86,26 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         return mainPanel;
     }
 
-    private JPanel header(){
+    private JPanel menuCart(String selectedCategory, Product product) {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setSize(WIDTH, HEIGHT);
+
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.add(header(selectedCategory), BorderLayout.NORTH);
+        mainPanel.add(foodCategory(), BorderLayout.WEST);
+        mainPanel.add(singleDisplay(product), BorderLayout.CENTER);
+        mainPanel.add(buttonContainer(), BorderLayout.SOUTH);
+
+        return mainPanel;
+    }
+
+    private JPanel header(String selectedCategory){
         JPanel headerPanel = new JPanel();
         headerPanel.setPreferredSize(new Dimension(WIDTH, 100));
         headerPanel.setBackground(Color.WHITE);
 
 
-        JLabel headerLabel = new JLabel("FOOD MENU");
+        JLabel headerLabel = new JLabel(selectedCategory);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
         headerLabel.setFont(f);
 
@@ -101,8 +117,8 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         JPanel categoryPanel = new JPanel();
         String filepath = "categories\\";
         String[] imagesource = {
-                "whatsnew", "sharer", "burger", "mcnuggets", "eurosaver", "happymeal", "fries", "desserts",
-                "drinks", "vegan", "vegetarian", "mccafe", "breakfast","wraps", "condiments"};
+                "whatsnew", "sharer", "burger", "mcnuggets", "wraps", "mccafe", "breakfast", "vegetarian",
+                "vegan", "eurosaver", "happymeal", "fries", "desserts", "drinks",   "condiments"};
 
         categoryView(categoryPanel);
         JButton btnCategory;
@@ -128,7 +144,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         for (Product p : products) {
             if (p.category().equalsIgnoreCase(selectedCategory)) {
                 command = p.productID() + "," + p.productName();
-                JPanel fc = foodCard("foodcard\\" + p.path(), p.productName(), p.productPrice(), command);
+                JPanel fc = foodCard("foodcard\\" + p.path(), p.productName(), p.productPrice(), command, true);
                 panel.add(fc);
             }
         }
@@ -142,7 +158,72 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         return scrollPane(wrapperPanel);
     }
 
-    private JPanel foodCard(String imagePath, String name, Double price, String actionCommand) {
+    private JScrollPane singleDisplay(Product byRef_product) {
+        String main = "#ffc600";
+        String hover = "#e76a05";
+        String click = "#bf0c0c";
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
+
+        addToCart = new CartCustomButtons("Add to Cart", main, hover, click);
+        goBack = new CartCustomButtons("Go Back", main, hover, click);
+        add = new CartCustomButtons("+", main, hover, click);
+        minus = new CartCustomButtons("-", main, hover, click);
+        JTextField amount = new JTextField("1", 3);
+        amount.setHorizontalAlignment(JTextField.CENTER);
+
+        addToCart.setActionCommand(addToCart.getText());
+        goBack.setActionCommand(goBack.getText());
+        add.setActionCommand(add.getText());
+        minus.setActionCommand(minus.getText());
+
+        addToCart.addActionListener(this);
+        goBack.addActionListener(this);
+        add.addActionListener(this);
+        minus.addActionListener(this);
+
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        JPanel imagePanel = new JPanel();
+        imagePanel.setLayout(new BorderLayout());
+        imagePanel.setPreferredSize(new Dimension(150, 150));
+
+        for (Product p : products) {
+            if (p == byRef_product) {
+                JPanel fc = foodCard("foodcard\\" + p.path(), p.productName(), p.productPrice(), String.valueOf(p), false);
+
+                fc.setPreferredSize(new Dimension(100, 100));
+                imagePanel.add(fc, BorderLayout.CENTER);
+            }
+        }
+
+        panel.add(imagePanel, gbc);
+
+        gbc.gridy = 1;
+        JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        controlsPanel.setBackground(Color.WHITE);
+        controlsPanel.add(minus);
+        controlsPanel.add(amount);
+        controlsPanel.add(add);
+        controlsPanel.add(addToCart);
+        controlsPanel.add(goBack);
+
+        panel.add(controlsPanel, gbc);
+
+        JPanel wrapperPanel = new JPanel(new BorderLayout());
+        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 50));
+        wrapperPanel.add(panel, BorderLayout.CENTER);
+        wrapperPanel.setBackground(Color.WHITE);
+
+        return scrollPane(wrapperPanel);
+    }
+
+    private JPanel foodCard(String imagePath, String name, Double price, String actionCommand, boolean btnState) {
         String priceFormat = String.format("Price: € %.2f", price);
         JPanel foodCardLayout = new JPanel();
 
@@ -152,6 +233,9 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         JLabel foodName = new JLabel(name);
         JLabel foodPrice = new JLabel(priceFormat);
         JButton product = thumbnail(imagePath +".jpeg");
+        product.setEnabled(btnState);
+        product.setDisabledIcon(product.getIcon());
+        product.setOpaque(true);
 
         product.setActionCommand(actionCommand);
         product.addActionListener(this);
@@ -232,9 +316,22 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         target.setPreferredSize(new Dimension(200, HEIGHT * 2));
     }
 
+    private Product searchProduct(String item){
+        Product itemSearch = null;
+        for (Product p: products) {
+            if (item.equals(p.productID() + "," + p.productName())){
+                itemSearch = p;
+            }
+        }
+
+        return itemSearch;
+
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
+        String selectedCategory = cmd.substring(1);
         if (e.getSource() == start){
             switchPanel(menu(categories[0]));
             System.out.println("Switched to Food Menu!");
@@ -242,12 +339,24 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             switchPanel(start());
             background();
             System.out.println("Switched to Home Menu!");
-        } else if(cmd != null && cmd.contains(",")){
-            System.out.println(cmd);
-        } else if (cmd != null && cmd.contains("*")) {
-            String selectedCategory = cmd.substring(1);
+        } else if(cmd.contains(",")){
+            Product p = searchProduct(cmd);
+            if(p != null){
+                switchPanel(menuCart(p.category(), p));
+                System.out.println(p);
+            }
+
+            //System.out.println(cmd);
+        } else if (cmd.contains("*")) {
+
             switchPanel(menu(selectedCategory));
             System.out.println(selectedCategory);
+        } else if (e.getSource() == addToCart) {
+//            orderedItems.addToBasket(p);
+            System.out.println("prep time is " + orderedItems.getTotalPrepTime());
+            System.out.println("total amount € " + orderedItems.getTotalPrice());
+            System.out.println("Hello");
+            System.out.println(orderedItems.size());
         }
     }
 }

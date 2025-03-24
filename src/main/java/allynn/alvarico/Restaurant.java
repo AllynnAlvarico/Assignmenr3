@@ -8,7 +8,8 @@ public class Restaurant {
     public Restaurant(){
         FileManagement fileManagement = new FileManagement();
         fileManagement.setProductData();
-        UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts());
+        OrderItem orderItem = new OrderItem();
+        UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts(), orderItem);
     }
 
     public static void main(String[] args) {

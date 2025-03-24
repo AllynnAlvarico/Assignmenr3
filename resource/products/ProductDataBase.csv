@@ -101,3 +101,80 @@ pkey,name,category,price,prepTime,path
 100,Chicken McNuggets Meal,Happy Meal,5,6,HMNugget
 101,Fish Finger Meal,Happy Meal,5,6,HMFF
 102,Happy Meal Veggie Dippers ,Happy Meal,5,6,HMVD
+103,Shamrock Shake,Desserts,4.3,2,Shamrock Shake
+104,Mar McFlurry,Desserts,4.1,2,Mar McFlurry
+105,Mar Mini McFlurry,Desserts,3.4,2,Mar Mini McFlurry
+106,Raspberry and White Chocolate Pie,Desserts,2.8,3,Raspberry and White Chocolate Pie
+107,Oreo McFlurry,Desserts,2.8,3,OreoMcflurry
+108,Maltesers McFlurry,Desserts,2.8,3,MaltMcflurry
+109,Smarties McFlurry,Desserts,2.8,3,SmartMcflurry
+110,Chocolate Brownie,Desserts,2.8,3,chocbrownie
+111,Mixed Berry Muffin,Desserts,2.8,3,mbmuffin
+112,Triple Chocolate Cookie,Desserts,2.8,3,tccookie
+113,Sugar Donut,Desserts,2.8,3,donut
+114,Apple Pie,Desserts,2.8,3,applepie
+115,Pineapple Stick,Desserts,2.8,3,pinestick
+116,Chocolate Milkshake,Desserts,4.9,2,Chocolate Milkshake
+117,Strawberry Milkshake,Desserts,4.9,2,Strawberry Milkshake
+118,Vanilla Milkshake,Desserts,4.9,2,Vanilla Milkshake
+119,McPlant,Vegan,1,2,McPlant
+120,Vegetable Deluxe,Vegan,5,4,VegeDe
+121,Veggie Dippers - 4 pieces,Vegan,2,8,vd4p
+122,The Spicy Veggie ,Vegan,5.3,4,tsVeggie
+123,Medium Fries,Vegan,3.7,1,Medium Fries
+124,Carrot Stick,Vegan,2,1,carrotstick
+125,Pineapple Stick,Vegan,2.8,3,pinestick
+126,McPlant,Vegetarian,1,2,McPlant
+127,Vegetable Deluxe,Vegetarian,5,4,VegeDe
+128,Veggie Dippers - 4 pieces,Vegetarian,2,8,vd4p
+129,The Spicy Veggie ,Vegetarian,5.3,4,tsVeggie
+130,Medium Fries,Vegetarian,3.7,1,Medium Fries
+131,Side Salad,Vegetarian,4,6,sidesalad
+132,Ice Latte,Vegetarian,1,6,icelatte
+133,Mar McFlurry,Vegetarian,4.1,2,Mar McFlurry
+134,Mar Mini McFlurry,Vegetarian,3.4,2,Mar Mini McFlurry
+135,Oreo McFlurry,Vegetarian,2.8,3,OreoMcflurry
+136,Maltesers McFlurry,Vegetarian,2.8,3,MaltMcflurry
+137,Smarties McFlurry,Vegetarian,2.8,3,SmartMcflurry
+138,Toffee Apple Donut,Vegetarian,3.2,3,tadonut
+139,Chocolate Brownie,Vegetarian,2.8,3,chocbrownie
+140,Triple Chocolate Cookie,Vegetarian,2.8,3,tccookie
+141,Mixed Berry Muffin,Vegetarian,2.8,3,mbmuffin
+142,Sugar Donut,Vegetarian,2.8,3,donut
+143,Carrot Stick,Vegetarian,2,1,carrotstick
+144,Pineapple Stick,Vegetarian,1,3,pinestick
+145,Breakfast Wrap with Ketchup,Breakfast Menu,4,5,bwrapketch
+146,Breakfast Wrap with Brown Sauce,Breakfast Menu,2,5,bwrapbrown
+147,Mighty McMuffin,Breakfast Menu,5,5,mightmuffin
+148,Breakfast Roll,Breakfast Menu,7,5,broll
+149,Bacon Roll,Breakfast Menu,4,5,baconroll
+150,Double Bacon & Egg McMuffin,Breakfast Menu,7,5,dbem
+151,Sausage & Egg McMuffin,Breakfast Menu,9,5,sem
+152,Bacon & Egg McMuffin,Breakfast Menu,5,5,bem
+153,Double Sausage & Egg McMuffin,Breakfast Menu,89,5,dsem
+154,Egg & Cheese McMuffin,Breakfast Menu,5,5,ecm
+155,Muffin with Jam,Breakfast Menu,3,5,mwj
+156,Hash Brown,Breakfast Menu,76,5,hash
+157,Pancakes Sausage & Syrup,Breakfast Menu,1,5,pss
+158,Pancakes & Syrup,Breakfast Menu,8,5,ps
+159,Cheese Toastie,Breakfast Menu,5,5,ctoastie
+160,Bacon & Cheese Toastie,Breakfast Menu,7,5,bct
+161,Flahavan Quick Oats,Breakfast Menu,89,3,fqo
+162,Flahavan Quick Oats with Jam,Breakfast Menu,2.8,3,fqojam
+163,Flahavan Quick Oatswith Sugar,Breakfast Menu,4,3,fqosugar
+164,Flahavan Quick Oats with Syrup,Breakfast Menu,2,3,fqosyrup
+165,Pineapple Stick,Breakfast Menu,4,3,pinestick
+166,Rich Tomato Dip - 25ml,Condiments & Sauces,0.9,1,tomdip
+167,Garlic Mayo Dip,Condiments & Sauces,0.9,1,gmd
+168,Tomato Ketchup - 10g,Condiments & Sauces,0.2,1,toms
+169,BBQ Dip - 30g,Condiments & Sauces,0.9,1,bbqdip
+170,Sweet & Sour Dip - 30g,Condiments & Sauces,0.9,1,ssd
+171,Sweet Curry Dip - 30g,Condiments & Sauces,0.9,1,scd
+172,Mayo Dip - 19g,Condiments & Sauces,0.2,1,md
+173,Sweet Chilli Dip,Condiments & Sauces,1,1,schillidip
+174,Sweet & Smoky BBQ Dip,Condiments & Sauces,1,1,ssbd
+175,Balsamic Dressing - 30g,Condiments & Sauces,1,1,balsam
+176,Pancake Syrup - 40g,Condiments & Sauces,1,1,pansyrup
+177,Strawberry Jam - 15g,Condiments & Sauces,0.2,1,jam
+178,White Sugar Sachet,Condiments & Sauces,0.1,1,sugar
+179,Canderel Yellow Sweetener Sachet,Condiments & Sauces,0.1,1,canderel
