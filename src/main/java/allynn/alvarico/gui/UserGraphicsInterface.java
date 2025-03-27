@@ -25,10 +25,11 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     private int Yaxis = 50;
     private int Xaxis = 650;
     private JButton start, confirmButton, continueButton, cancelButton, addToCart, goBack, add, minus;
+    private JTextField amount;
     private Font f = new Font("Comic Sans MS", Font.BOLD, 18);
     private final ArrayList<Product> products;
     private ArrayList<OrderItem> basket;
-    private OrderItem orderedItems;
+    private int orderedQuantity = 0;
     String[] categories = {
             "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Wraps and Salads",
             "McCafe", "Breakfast Menu", "Vegetarian", "Vegan", "Eurosaver Menu", "Happy Meal",
@@ -159,7 +160,9 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         goBack = new CartCustomButtons("Go Back", main, hover, click);
         add = new CartCustomButtons("+", main, hover, click);
         minus = new CartCustomButtons("-", main, hover, click);
-        JTextField amount = new JTextField("1", 3);
+        amount = new JTextField("1", 3);
+
+
         amount.setHorizontalAlignment(JTextField.CENTER);
 
         addToCart.setActionCommand(addToCart.getText() + byRef_product.productID());
@@ -277,7 +280,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
         for (Product p : products) {
             if (productId.equals(String.valueOf(p.productID()))) {
-                OrderItem orderItem = new OrderItem(p, 1);
+                OrderItem orderItem = new OrderItem(p, orderedQuantity);
                 basket.add(orderItem);
                 olp.addOrderItem(orderItem);
                 System.out.println("Added to cart: " + p.productName());
@@ -321,6 +324,16 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         } else if (e.getSource() == addToCart) {
             addToCartItem(cmd);
             gutils.switchPanel(this, menuCart());
+        } else if (e.getSource() == goBack) {
+            gutils.switchPanel(this, menu("What's New"));
+        } else if (e.getSource() == add) {
+            orderedQuantity++;
+            amount.setText(String.valueOf(orderedQuantity));
+        } else if (e.getSource() == minus) {
+            if (orderedQuantity > 0) {
+                orderedQuantity--;
+                amount.setText(String.valueOf(orderedQuantity));
+            }
         }
     }
 }

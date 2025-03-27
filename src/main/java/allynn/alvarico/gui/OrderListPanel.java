@@ -16,6 +16,7 @@ public class OrderListPanel extends JPanel {
     public OrderListPanel(Font f, ArrayList<OrderItem> customerOrder) {
         this.customerOrder = customerOrder;
         setLayout(new BorderLayout(5, 5));
+        setBackground(getBackground());
         setMaximumSize(new Dimension(400, 300));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -32,13 +33,13 @@ public class OrderListPanel extends JPanel {
         scrollPane.setMaximumSize(new Dimension(380, 250));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Add totals panel at the bottom
         add(createTotalsPanel(f), BorderLayout.SOUTH);
         updateTotals();
     }
 
     private JPanel createTotalsPanel(Font f) {
         JPanel totalsPanel = new JPanel();
+        totalsPanel.setBackground(getBackground());
         totalsPanel.setLayout(new BoxLayout(totalsPanel, BoxLayout.Y_AXIS));
         totalsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 
@@ -46,7 +47,6 @@ public class OrderListPanel extends JPanel {
         totalPriceLabel = new JLabel("Total Price: €0.00");
         totalPrepTimeLabel = new JLabel("Preparation Time: 0 mins");
 
-        // Set font for labels
         Font smallerFont = f.deriveFont(12f);
         totalItemsLabel.setFont(smallerFont);
         totalPriceLabel.setFont(smallerFont);
