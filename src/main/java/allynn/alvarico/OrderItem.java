@@ -2,6 +2,7 @@ package allynn.alvarico;
 
 import allynn.alvarico.product.Product;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 /**
@@ -22,11 +23,15 @@ import java.util.ArrayList;
 *
  */
 
-public class OrderItem extends ArrayList<Product> {
+public class OrderItem {
 
     private int orderNumber;
+    private int productQuantity;
+    private Product product;
 
-    public OrderItem(){
+    public OrderItem(Product product, int quantity){
+        this.product = product;
+        this.productQuantity = quantity;
         this.orderNumber = 0;
     }
 
@@ -38,40 +43,15 @@ public class OrderItem extends ArrayList<Product> {
         return this.orderNumber;
     }
 
-    public void addToBasket(Product byRef_product){
-        this.add(byRef_product);
+    public double getTotal() {
+        return product.productPrice() * productQuantity;
     }
 
-    public String getOrderedItems(){
-        StringBuilder orderedItems = new StringBuilder();
-        this.forEach(product -> orderedItems.append(product.productName()).append("\n"));
-        return orderedItems.toString();
+    public int getProductQuantity(){
+        return this.productQuantity;
     }
 
-    public void removeFromBasket(Product byRef_product){
-        this.remove(byRef_product);
-    }
-
-    public void clearBasket(){
-        this.clear();
-    }
-
-    public double getTotalPrice(){
-        return this.stream().mapToDouble(Product::productPrice).sum();
-    }
-
-    public int getTotalPrepTime(){
-        return this.stream().mapToInt(Product::productPrepTime).sum();
-    }
-
-    public void printBasket(){
-        System.out.println("Order Number: " + this.orderNumber);
-        System.out.println("Basket:");
-        this.forEach(product -> System.out.println(product.productName()));
-        System.out.println("Total Price: " + this.getTotalPrice());
-        System.out.println("Total Prep Time: " + this.getTotalPrepTime());
-    }
-    public ArrayList<Product> customerBasket(){
-        return this;
+    public Product getProduct(){
+        return this.product;
     }
 }
