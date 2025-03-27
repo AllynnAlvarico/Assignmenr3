@@ -29,7 +29,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     private Font f = new Font("Comic Sans MS", Font.BOLD, 18);
     private final ArrayList<Product> products;
     private ArrayList<OrderItem> basket;
-    private int orderedQuantity = 0;
+    private int orderedQuantity = 1;
     String[] categories = {
             "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Wraps and Salads",
             "McCafe", "Breakfast Menu", "Vegetarian", "Vegan", "Eurosaver Menu", "Happy Meal",
@@ -286,7 +286,36 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
                 System.out.println("Added to cart: " + p.productName());
             }
         }
+        orderedQuantity = 1;
     }
+
+//    private void addToCartItem(String byRef_cmd){
+//        String productId = byRef_cmd.replace("Add to Cart", "").trim();
+//        OrderItem orderItem = null;
+//        for (Product p : products) {
+//            if (basket.isEmpty()) {
+//                orderItem = new OrderItem(p, orderedQuantity);
+//            } else {
+//                if (productId.equals(String.valueOf(p.productID()))) {
+//                    if (!basket.contains(basket.get(orderItem.getItemNumber()))) {
+//                        orderItem = new OrderItem(p, orderedQuantity);
+//                    } else {
+//                        orderItem = basket.get(orderItem.getItemNumber());
+//                        orderItem.addQuantity(orderedQuantity);
+//                    }
+//
+//                    //                System.out.println(orderItem);
+//                    //                System.out.println("Added to cart: " + p.productName());
+//                }
+//
+//            }
+//
+//        }
+//        basket.add(orderItem);
+//        olp.addOrderItem(orderItem);
+//
+//        orderedQuantity = 1;
+//    }
 
     private Product searchProduct(String actionCommand){
         Product itemSearch = null;

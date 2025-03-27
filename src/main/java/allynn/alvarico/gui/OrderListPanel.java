@@ -44,7 +44,7 @@ public class OrderListPanel extends JPanel {
         totalsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 
         totalItemsLabel = new JLabel("Total Items: 0");
-        totalPriceLabel = new JLabel("Total Price: €0.00");
+        totalPriceLabel = new JLabel("Total Price: € 0.00");
         totalPrepTimeLabel = new JLabel("Preparation Time: 0 mins");
 
         Font smallerFont = f.deriveFont(12f);
@@ -75,7 +75,7 @@ public class OrderListPanel extends JPanel {
         }
 
         totalItemsLabel.setText(String.format("Total Items: %d", totalItems));
-        totalPriceLabel.setText(String.format("Total Price: €%.2f", totalPrice));
+        totalPriceLabel.setText(String.format("Total Price: € %.2f", totalPrice));
         totalPrepTimeLabel.setText(String.format("Preparation Time: %d mins", totalPrepTime));
     }
 
