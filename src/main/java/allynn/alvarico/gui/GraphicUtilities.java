@@ -4,12 +4,15 @@ import allynn.alvarico.customs.BackgroundPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class GraphicUtilities {
 
     private int WIDTH;
     private int HEIGHT;
     private Font f;
+    private Color white = Color.WHITE;
 
     public GraphicUtilities(Font font, int byRef_width, int byRef_height){
         HEIGHT = byRef_height;
@@ -80,5 +83,17 @@ public class GraphicUtilities {
         mainPanel.add(west, BorderLayout.WEST);
         mainPanel.add(center, BorderLayout.CENTER);
         mainPanel.add(south, BorderLayout.SOUTH);
+    }
+
+    public void paymentDisplay(JPanel mainPanel, JPanel center, JPanel south){
+        mainPanel.setSize(WIDTH, HEIGHT);
+        mainPanel.setBackground(Color.WHITE);
+//        mainPanel.add(north, BorderLayout.NORTH);
+        mainPanel.add(center, BorderLayout.CENTER);
+        mainPanel.add(center, BorderLayout.SOUTH);
+    }
+
+    public Color getBackground(){
+        return Color.WHITE;
     }
 }

@@ -24,27 +24,12 @@ import java.util.ArrayList;
  */
 
 public class OrderItem {
-
-
-
-    private int itemNumber;
-    private int orderNumber;
     private int productQuantity;
     private Product product;
 
     public OrderItem(Product product, int quantity){
         this.product = product;
         this.productQuantity = quantity;
-        this.orderNumber = 0;
-        this.itemNumber++;
-    }
-
-    public void incrementOrderNumber(){
-        this.orderNumber++;
-    }
-
-    public int getOrderNumber(){
-        return this.orderNumber;
     }
 
     public double getTotal() {
@@ -58,10 +43,8 @@ public class OrderItem {
     public Product getProduct(){
         return this.product;
     }
-    public int getItemNumber() {
-        return itemNumber;
-    }
 
+    // need to implement this on later date
     public int addQuantity(int quantity){
        return productQuantity += quantity;
     }

@@ -3,20 +3,25 @@ package allynn.alvarico.gui;
 import allynn.alvarico.OrderItem;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class OrderListPanel extends JPanel {
+
     private JLabel titleLabel;
     private JPanel orderPanel;
     private ArrayList<OrderItem> customerOrder;
     private JLabel totalItemsLabel;
     private JLabel totalPriceLabel;
     private JLabel totalPrepTimeLabel;
+    private final Color bgWhite;
+    private JButton removeButton;
 
-    public OrderListPanel(Font f, ArrayList<OrderItem> customerOrder) {
+    public OrderListPanel(Font f, ArrayList<OrderItem> customerOrder, Color white) {
         this.customerOrder = customerOrder;
+        bgWhite = white;
         setLayout(new BorderLayout(5, 5));
-        setBackground(getBackground());
+        setBackground(bgWhite);
         setMaximumSize(new Dimension(400, 300));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -39,7 +44,7 @@ public class OrderListPanel extends JPanel {
 
     private JPanel createTotalsPanel(Font f) {
         JPanel totalsPanel = new JPanel();
-        totalsPanel.setBackground(getBackground());
+        totalsPanel.setBackground(bgWhite);
         totalsPanel.setLayout(new BoxLayout(totalsPanel, BoxLayout.Y_AXIS));
         totalsPanel.setBorder(BorderFactory.createEmptyBorder(10, 5, 5, 5));
 
@@ -86,6 +91,7 @@ public class OrderListPanel extends JPanel {
                 BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
+        panel.setBackground(getBackground());
         panel.setMaximumSize(new Dimension(360, 40));
         panel.setPreferredSize(new Dimension(360, 40));
 
@@ -98,8 +104,13 @@ public class OrderListPanel extends JPanel {
         JLabel lblTotal = new JLabel(String.format("€%.2f", orderItem.getTotal()));
         lblTotal.setPreferredSize(new Dimension(70, 30));
 
-        JButton removeButton = new JButton("Remove");
+        removeButton = new JButton("Remove");
         removeButton.setPreferredSize(new Dimension(80, 30));
+        removeButton.setActionCommand("remove" + orderItem.getProduct().productID());
+
+        removeButton.addActionListener(e -> {
+            removeOrderItem(orderItem);
+        });
 
         panel.add(lblName);
         panel.add(Box.createHorizontalStrut(10));
@@ -112,9 +123,35 @@ public class OrderListPanel extends JPanel {
 
         orderPanel.add(panel);
         orderPanel.add(Box.createVerticalStrut(5));
+        orderPanel.setBackground(bgWhite);
 
         updateTotals();
 
+        revalidate();
+        repaint();
+    }
+
+    public JButton getRemoveCmd(){
+        return removeButton;
+    }
+
+    public void removeOrderItem(OrderItem toRemove) {
+        customerOrder.remove(toRemove);
+
+        Component[] components = orderPanel.getComponents();
+        for (Component comp : components) {
+            if (comp instanceof JPanel panel) {
+                for (Component inner : panel.getComponents()) {
+                    if (inner instanceof JLabel label) {
+                        if (label.getText().equals(toRemove.getProduct().productName())) {
+                            orderPanel.remove(panel);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        updateTotals();
         revalidate();
         repaint();
     }
