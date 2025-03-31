@@ -4,13 +4,17 @@ import allynn.alvarico.file.FileManagement;
 import allynn.alvarico.gui.UserGraphicsInterface;
 import allynn.alvarico.product.Product;
 
+import java.awt.*;
+
 public class Restaurant {
+
+    private final Color whiteBackgrond = Color.WHITE;
+    private Font comicSansMS = new Font("Comic Sans MS", Font.BOLD, 18);
 
     public Restaurant(){
         FileManagement fileManagement = new FileManagement();
         fileManagement.setProductData();
-//        OrderItem orderItem = new OrderItem(null, 0);
-        UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts());
+        UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts(), comicSansMS, whiteBackgrond);
     }
 
     public static void main(String[] args) {

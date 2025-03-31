@@ -24,12 +24,22 @@ import java.util.ArrayList;
  */
 
 public class OrderItem {
+
+    private int orderNumber;
     private int productQuantity;
     private Product product;
 
     public OrderItem(Product product, int quantity){
         this.product = product;
         this.productQuantity = quantity;
+    }
+
+    public void setOrderNumber(int orderNumber){
+        this.orderNumber = orderNumber;
+    }
+
+    public int getOrderNumber(){
+        return this.orderNumber;
     }
 
     public double getTotal() {
