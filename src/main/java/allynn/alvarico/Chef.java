@@ -76,25 +76,29 @@ public class Chef extends Thread {
     }
 
     private void updateOrdersDisplay() {
-        SwingUtilities.invokeLater(() -> {
-            ordersPanel.removeAll();
-            if (currentOrder != null) {
-                JLabel orderLabel = new JLabel(String.format("Preparing Order #%03d", currentOrder));
-                orderLabel.setFont(font);
-                orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
-                orderLabel.setBackground(Color.WHITE);
-                orderLabel.setOpaque(true);
-                ordersPanel.add(orderLabel);
-                ordersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-                ordersPanel.add(timerLabel);
-            } else {
-                timerLabel.setText("No order in preparation");
-                ordersPanel.add(timerLabel);
-            }
-            ordersPanel.revalidate();
-            ordersPanel.repaint();
-        });
+
+        new Timer(5000, evt -> {
+            SwingUtilities.invokeLater(() -> {
+                ordersPanel.removeAll();
+                if (currentOrder != null) {
+                    JLabel orderLabel = new JLabel(String.format("Preparing Order #%03d", currentOrder));
+                    orderLabel.setFont(font);
+                    orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
+                    orderLabel.setBackground(Color.WHITE);
+                    orderLabel.setOpaque(true);
+                    ordersPanel.add(orderLabel);
+                    ordersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                    ordersPanel.add(timerLabel);
+                } else {
+                    timerLabel.setText("No order in preparation");
+                    ordersPanel.add(timerLabel);
+                }
+                ordersPanel.revalidate();
+                ordersPanel.repaint();
+            });
+        }).start();
+
     }
 
     private int calculatePrepTime(ArrayList<OrderItem> items) {
@@ -118,7 +122,9 @@ public class Chef extends Thread {
     }
 
     private void prepareOrder(Integer orderNumber, ArrayList<OrderItem> items) {
+
         try {
+            Thread.sleep(5000);
             int prepTime = calculatePrepTime(items);
             System.out.println("Preparing Order #" + orderNumber + " (Prep time: " + prepTime + " seconds)");
 

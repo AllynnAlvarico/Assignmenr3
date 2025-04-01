@@ -463,7 +463,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             }
         });
 
-        timer.setInitialDelay(3000);
+        timer.setInitialDelay(5000);
         timer.start();
         finishOrder();
     }

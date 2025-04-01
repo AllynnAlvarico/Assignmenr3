@@ -14,6 +14,9 @@ public class Restaurant {
     public Restaurant(){
         FileManagement fileManagement = new FileManagement();
         fileManagement.setProductData();
+//        fileManagement.fileInputStream();
+//        fileManagement.bufferedOutputStream();
+//        fileManagement.dataOutputStream();
         UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts(), comicSansMS, whiteBackgrond);
     }
 

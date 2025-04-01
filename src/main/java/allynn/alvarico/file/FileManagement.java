@@ -54,4 +54,56 @@ public class FileManagement {
     public ArrayList<Product> getProducts() {
         return products;
     }
+
+    public void fileInputStream() {
+        String message = "Hello World";
+        try {
+            FileOutputStream fos = new FileOutputStream("text.txt");
+            FileInputStream fis = new FileInputStream("text.txt");
+            fos.write(message.getBytes());
+            fos.close();
+            int i = 0;
+            while((i = fis.read()) != -1){
+                System.out.print((char)i);
+            }
+            fis.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void bufferedOutputStream(){
+        try {
+            FileOutputStream fos = new FileOutputStream("oosdfile.txt");
+            BufferedOutputStream bos = new BufferedOutputStream(fos); // BufferedOutputStream is efficient for reading bytes
+            String text = "Studying OOSD3.";
+            byte data[] = text.getBytes();
+            bos.write(data);
+            bos.flush();
+            bos.close();
+            fos.close();
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        System.out.println("Success");
+    }
+
+    public void dataOutputStream(){
+        try{
+            FileOutputStream fos = new FileOutputStream("test.txt");
+            DataOutputStream dos = new DataOutputStream(fos);
+//            dos.writeBoolean(false);
+            dos.writeChars("Hello World");
+//            dos.writeDouble(1.1);
+            dos.flush();
+            dos.close();
+            System.out.println("Success");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

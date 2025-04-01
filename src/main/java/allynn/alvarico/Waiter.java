@@ -59,11 +59,11 @@ public class Waiter extends Thread {
     }
 
     public synchronized void addOrder(Integer orderNumber, ArrayList<OrderItem> items) {
-        orderQueue.put(orderNumber, items);
-        chef.receiveOrder(orderNumber, items);
-        newOrder = true;
-        notify();
-        updateOrdersDisplay();
+            orderQueue.put(orderNumber, items);
+            chef.receiveOrder(orderNumber, items);
+            newOrder = true;
+            this.notify();
+            updateOrdersDisplay();
     }
 
     public synchronized void orderCompleted(Integer orderNumber) {
@@ -73,7 +73,7 @@ public class Waiter extends Thread {
             isProcessingOrder = false;
 
             if (!orderQueue.isEmpty()) {
-                Timer timer = new Timer(1000, event -> {
+                Timer timer = new Timer(5000, event -> {
                     if (!isProcessingOrder) {
                         isProcessingOrder = true;
                         Integer nextOrder = orderQueue.keySet().iterator().next();
@@ -88,21 +88,23 @@ public class Waiter extends Thread {
     }
 
     private void updateOrdersDisplay() {
-        SwingUtilities.invokeLater(() -> {
-            ordersPanel.removeAll();
-            orderQueue.forEach((orderNum, items) -> {
-                JLabel orderLabel = new JLabel(String.format("Order #%03d", orderNum));
-                orderLabel.setFont(font);
-                orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
-                orderLabel.setBackground(Color.WHITE);
-                orderLabel.setOpaque(true);
-                ordersPanel.add(orderLabel);
-                ordersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        new Timer(5000, evt -> {
+            SwingUtilities.invokeLater(() -> {
+                ordersPanel.removeAll();
+                orderQueue.forEach((orderNum, items) -> {
+                    JLabel orderLabel = new JLabel(String.format("Order #%03d", orderNum));
+                    orderLabel.setFont(font);
+                    orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
+                    orderLabel.setBackground(Color.WHITE);
+                    orderLabel.setOpaque(true);
+                    ordersPanel.add(orderLabel);
+                    ordersPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+                });
+                ordersPanel.revalidate();
+                ordersPanel.repaint();
             });
-            ordersPanel.revalidate();
-            ordersPanel.repaint();
-        });
+        }).start();
     }
 
     public synchronized void waitForOrder() throws InterruptedException {
@@ -117,7 +119,7 @@ public class Waiter extends Thread {
         while (!Thread.interrupted()) {
             try {
                 waitForOrder();
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 break;
