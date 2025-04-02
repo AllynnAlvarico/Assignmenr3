@@ -3,6 +3,8 @@ package allynn.alvarico;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,13 +68,51 @@ public class Chef extends Thread {
     }
 
     public synchronized void receiveOrder(Integer orderNumber, ArrayList<OrderItem> items) {
-        if (!isProcessing) {
+        if (currentOrder != null) {
+            // If there's already an order being processed, add to queue and return
             orderQueue.put(orderNumber, items);
-            currentOrder = orderNumber;
-            isProcessing = true;
-            notify();
-            updateOrdersDisplay();
+            return;
         }
+
+        currentOrder = orderNumber;
+        orderQueue.put(orderNumber, items);
+
+        SwingUtilities.invokeLater(() -> {
+            ordersPanel.removeAll();
+            JLabel preparingLabel = new JLabel("Preparing Order #" + orderNumber);
+            preparingLabel.setFont(font);
+            ordersPanel.add(preparingLabel);
+            ordersPanel.revalidate();
+            ordersPanel.repaint();
+
+            // Add initial delay before starting countdown
+            Timer initialDelay = new Timer(5000, e -> {
+                startCountdown(orderNumber, items);
+                ((Timer) e.getSource()).stop();
+            });
+            initialDelay.setRepeats(false);
+            initialDelay.start();
+        });
+    }
+
+
+    private void startCountdown(Integer orderNumber, ArrayList<OrderItem> items) {
+        int totalTime = calculatePrepTime(items);
+        Timer timer = new Timer(1000, new ActionListener() {
+            int timeLeft = totalTime;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (timeLeft > 0) {
+                    updateCountdownDisplay(orderNumber, timeLeft);
+                    timeLeft--;
+                } else {
+                    ((Timer) e.getSource()).stop();
+                    orderCompleted(orderNumber);
+                }
+            }
+        });
+        timer.start();
     }
 
     private void updateOrdersDisplay() {
@@ -146,6 +186,59 @@ public class Chef extends Thread {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    private void updateCountdownDisplay(Integer orderNumber, int timeLeft) {
+        SwingUtilities.invokeLater(() -> {
+            ordersPanel.removeAll();
+            JLabel orderLabel = new JLabel("Preparing Order #" + orderNumber);
+            orderLabel.setFont(font);
+            ordersPanel.add(orderLabel);
+
+            JLabel timerLabel = new JLabel("Time remaining: " + timeLeft + " seconds");
+            timerLabel.setFont(font);
+            timerLabel.setForeground(Color.RED);
+            ordersPanel.add(timerLabel);
+
+            ordersPanel.revalidate();
+            ordersPanel.repaint();
+        });
+    }
+
+    private void orderCompleted(Integer orderNumber) {
+        SwingUtilities.invokeLater(() -> {
+            ordersPanel.removeAll();
+            JLabel completedLabel = new JLabel("Order #" + orderNumber + " is ready!");
+            completedLabel.setFont(font);
+            ordersPanel.add(completedLabel);
+            ordersPanel.revalidate();
+            ordersPanel.repaint();
+
+            // After 2 seconds, update the display
+            Timer timer = new Timer(2000, e -> {
+                synchronized (waiter) {
+                    waiter.orderCompleted(orderNumber);
+                    waiter.notify();
+
+                    ordersPanel.removeAll();
+                    if (orderQueue.isEmpty()) {
+                        JLabel noOrderLabel = new JLabel("No order in preparation");
+                        noOrderLabel.setFont(font);
+                        ordersPanel.add(noOrderLabel);
+                    } else {
+                        // Process next order if available
+                        currentOrder = orderQueue.keys().nextElement();
+                        ArrayList<OrderItem> nextItems = orderQueue.get(currentOrder);
+                        receiveOrder(currentOrder, nextItems);
+                    }
+                    ordersPanel.revalidate();
+                    ordersPanel.repaint();
+                    ((Timer) e.getSource()).stop();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
+        });
     }
 
     @Override
