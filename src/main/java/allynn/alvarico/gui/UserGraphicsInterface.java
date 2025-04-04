@@ -3,7 +3,6 @@ package allynn.alvarico.gui;
 import allynn.alvarico.Chef;
 import allynn.alvarico.OrderItem;
 import allynn.alvarico.Waiter;
-import allynn.alvarico.customs.CartCustomButtons;
 import allynn.alvarico.customs.CustomButton;
 import allynn.alvarico.product.Product;
 
@@ -29,13 +28,14 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     private final int WIDTH = 720;
     private final int Yaxis = 50;
     private final int Xaxis = 600;
-    private JButton start, confirmButton, continueButton, cancelButton, addToCart, goBack, add, minus, removeProduct;
+    private CustomButton start, confirmButton, continueButton, cancelButton, addToCart, goBack, add, minus, removeProduct;
     private JTextField amount;
     private final ArrayList<Product> products;
     private ArrayList<OrderItem> basket;
     private HashMap<Integer, ArrayList<OrderItem>> allOrder;
     private int orderedQuantity = 1;
     private int orderNumber = 1;
+    String choosenCategory;
     String[] categories = {
             "What's New", "Sharers & Bundles", "Burgers", "McNuggets and Selects", "Wraps and Salads",
             "McCafe", "Breakfast Menu", "Vegetarian", "Vegan", "Eurosaver Menu", "Happy Meal",
@@ -46,28 +46,22 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     Chef chef;
 
     public UserGraphicsInterface(ArrayList<Product> byRef_products, Font byRef_font, Color byRef_background) {
-        setAppFont(byRef_font);
-        setAppBackground(byRef_background);
+
+        appFont = byRef_font;
+        this.getContentPane().setBackground(byRef_background);
         this.products = byRef_products;
         basket = new ArrayList<>();
         allOrder = new HashMap<>();
-        gutils = new GraphicUtilities(appFont, WIDTH, HEIGHT);
-        olp = new OrderListPanel(appFont, basket, gutils.getBackground());
+        gutils = new GraphicUtilities(byRef_font, WIDTH, HEIGHT);
+        olp = new OrderListPanel(byRef_font, basket, gutils.getBackground());
         this.initialising();
 
-        waiter = new Waiter(appFont, 200, Yaxis);
+        waiter = new Waiter(byRef_font, 200, Yaxis);
         chef = new Chef(Xaxis + WIDTH, Yaxis);
         waiter.setChef(chef);
         chef.setWaiter(waiter);
         waiter.start();
         chef.start();
-    }
-
-    public void setAppFont(Font font) {
-        appFont = font;
-    }
-    public void setAppBackground(Color color) {
-        this.getContentPane().setBackground(color);
     }
 
     private void initialising() {
@@ -93,7 +87,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         panel.setLayout(null);
         panel.setOpaque(false);
 
-        start = new CustomButton("Start", "#ffc600", "#e76a05", "#bf0c0c");
+        start = new CustomButton("Start");
         start.setBounds(90, 40, 220, 50);
 
         start.addActionListener(this);
@@ -104,18 +98,17 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     }
 
     private JPanel menu(String selectedCategory) {
+        choosenCategory = selectedCategory;
         JPanel mainPanel = new JPanel(new BorderLayout());
         gutils.mainPanelSetup(
-                mainPanel, gutils.header(selectedCategory),
-                foodCategory(), foodDisplay(selectedCategory), buttonContainer());
+                mainPanel, selectedCategory, foodCategory(), foodDisplay(selectedCategory), buttonContainer());
         return mainPanel;
     }
 
     private JPanel itemDisplay(String selectedCategory, Product product) {
         JPanel mainPanel = new JPanel(new BorderLayout());
         gutils.mainPanelSetup(
-                mainPanel, gutils.header(selectedCategory),
-                foodCategory(), singleDisplay(product), buttonContainer());
+                mainPanel, selectedCategory, foodCategory(), singleDisplay(product), buttonContainer());
         return mainPanel;
     }
 
@@ -134,9 +127,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             btnCategory.setActionCommand("*" + categories[repeat]);
             btnCategory.addActionListener(this);
 
-            categoryPanel.add(btnCategory);
-            categoryPanel.add(new JLabel(categories[repeat]));
-            categoryPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+            gutils.addComponent(categoryPanel, btnCategory, new JLabel(categories[repeat]), Box.createRigidArea(new Dimension(0, 20)));
         }
         return gutils.scrollPane(categoryPanel);
     }
@@ -146,7 +137,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
         JPanel panel = new JPanel();
         panel.setBackground(getBackground());
-
 
         if (selectedCategory.equalsIgnoreCase("Basket")) {
             for (Product p : products) {
@@ -181,19 +171,19 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(getBackground());
 
-        addToCart = new CartCustomButtons("Add to Cart", main, hover, click);
-        goBack = new CartCustomButtons("Go Back", main, hover, click);
-        add = new CartCustomButtons("+", main, hover, click);
-        minus = new CartCustomButtons("-", main, hover, click);
+        addToCart = new CustomButton("Add to Cart");
+        goBack = new CustomButton("Go Back");
+        add = new CustomButton("+");
+        minus = new CustomButton("-");
         amount = new JTextField("1", 3);
 
 
         amount.setHorizontalAlignment(JTextField.CENTER);
 
         addToCart.setActionCommand(addToCart.getText() + byRef_product.productID());
-        goBack.setActionCommand(goBack.getText());
-        add.setActionCommand(add.getText());
-        minus.setActionCommand(minus.getText());
+//        goBack.setActionCommand(goBack.getText());
+//        add.setActionCommand(add.getText());
+//        minus.setActionCommand(minus.getText());
 
         addToCart.addActionListener(this);
         goBack.addActionListener(this);
@@ -224,12 +214,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         gbc.gridy = 1;
         JPanel controlsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         controlsPanel.setBackground(getBackground());
-        controlsPanel.add(minus);
-        controlsPanel.add(amount);
-        controlsPanel.add(add);
-        controlsPanel.add(addToCart);
-        controlsPanel.add(goBack);
-
+        gutils.addComponent(controlsPanel, minus, amount, add, addToCart, goBack);
         panel.add(controlsPanel, gbc);
 
         JPanel wrapperPanel = new JPanel(new BorderLayout());
@@ -267,8 +252,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
     public JPanel menuCart() {
         JPanel panel = new JPanel(new BorderLayout());
-        gutils.mainPanelSetup(panel, gutils.header("Customer Basket"),
-                foodCategory(), gutils.scrollPane(olp), buttonContainer());
+        gutils.mainPanelSetup(panel, "Customer Basket", foodCategory(), gutils.scrollPane(olp), buttonContainer());
         return panel;
     }
 
@@ -301,24 +285,18 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         serviceTaxLabel = new JLabel(String.format("Service Taxes:  € %.2f", serviceTax));
         totalLabel = new JLabel(String.format("Total:  € %.2f", total));
 
-        totalsPanel.add(Box.createVerticalStrut(10));
-        totalsPanel.add(vatLabel);
-        totalsPanel.add(serviceTaxLabel);
-        totalsPanel.add(totalLabel);
-
+        gutils.addComponent(totalsPanel, Box.createVerticalStrut(10), vatLabel, serviceTaxLabel, totalLabel);
 
         JPanel paymentButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton payCard = new CustomButton("Pay by Card", "#ffc600", "#e76a05", "#bf0c0c");
-        JButton payCounter = new CustomButton("Pay at Counter", "#ffc600", "#e76a05", "#bf0c0c");
+        JButton payCard = new CustomButton("Pay by Card");
+        JButton payCounter = new CustomButton("Pay at Counter");
         paymentButtons.setBackground(gutils.getBackground());
-        paymentButtons.add(payCard);
-        paymentButtons.add(payCounter);
+        gutils.addComponent(paymentButtons, payCard, payCounter);
 
         payCard.addActionListener(this);
         payCounter.addActionListener(this);
 
-        totalsPanel.add(Box.createVerticalStrut(10));
-        totalsPanel.add(paymentButtons);
+        gutils.addComponent(totalsPanel, Box.createVerticalStrut(10), paymentButtons);
 
         panel.add(totalsPanel, BorderLayout.SOUTH);
 
@@ -331,27 +309,21 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         panel.setLayout(new BorderLayout());
         panel.setBackground(getBackground());
 
-
         JLabel instructionLabel = new JLabel("<html><div style='text-align: center;'>Place your card on the screen<br>of the keypad below</div></html>", SwingConstants.CENTER);
         instructionLabel.setFont(appFont);
         instructionLabel.setHorizontalAlignment(SwingConstants.CENTER);
         instructionLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 20, 0));
         panel.add(instructionLabel, BorderLayout.NORTH);
 
-
         ImageIcon icon = new ImageIcon("resource\\images\\card_tap_icon.jpg");
         Image image = icon.getImage().getScaledInstance(100, 150, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(image));
+
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(imageLabel, BorderLayout.CENTER);
 
-        JButton backButton = new CustomButton("Confirm Card", "#ffc600", "#e76a05", "#bf0c0c");
-        backButton.setFocusPainted(false);
-        backButton.setBackground(getBackground());
-        backButton.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        backButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        backButton.setPreferredSize(new Dimension(220, 40));
-
+        CustomButton backButton = new CustomButton("Confirm Card");
+        backButton.defaultSettings();
         backButton.addActionListener(this);
 
         JPanel bottomPanel = new JPanel();
@@ -363,8 +335,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
         return panel;
     }
-
-
 
     private JPanel orderListPanel() {
         JPanel itemListPanel = new JPanel();
@@ -392,9 +362,9 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
         JPanel bottomPanel = new JPanel(new FlowLayout());
 
-        cancelButton = new CustomButton("Cancel", "#bf0c0c", "#ffc600", "#e76a05");
-        confirmButton = new CustomButton("Confirm", "#bf0c0c", "#ffc600", "#e76a05");
-        continueButton = new CustomButton("Continue Ordering", "#bf0c0c", "#ffc600", "#e76a05");
+        cancelButton = new CustomButton("Cancel");
+        confirmButton = new CustomButton("Confirm");
+        continueButton = new CustomButton("Continue Ordering");
 
         cancelButton.setPreferredSize(d);
         confirmButton.setPreferredSize(d);
@@ -403,13 +373,11 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         bottomPanel.setBackground(getBackground());
         bottomPanel.setPreferredSize(new Dimension(WIDTH, 100));
 
-        bottomPanel.add(cancelButton);
-        bottomPanel.add(continueButton);
-        bottomPanel.add(confirmButton);
+        gutils.addComponent(bottomPanel, cancelButton, continueButton, confirmButton);
 
         cancelButton.addActionListener(this);
         confirmButton.addActionListener(this);
-        continueButton.addActionListener(e -> gutils.switchPanel(this, menu(categories[0])));
+        continueButton.addActionListener(this);
 
         return bottomPanel;
     }
@@ -419,6 +387,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
 
         for (Product p : products) {
             if (productId.equals(String.valueOf(p.productID()))) {
+                orderedQuantity = Integer.parseInt(amount.getText());
                 OrderItem orderItem = new OrderItem(p, orderedQuantity);
                 orderItem.setOrderNumber(orderNumber);
                 basket.add(orderItem);
@@ -438,8 +407,8 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
     }
 
     private void finishOrder() {
-        System.out.println("The Order Number: " + orderNumber);
-        System.out.println(basket);
+        //System.out.println("The Order Number: " + orderNumber);
+        //System.out.println(basket);
         allOrder.put(orderNumber, new ArrayList<>(basket));
         waiter.addOrder(orderNumber, new ArrayList<>(basket));
         orderNumber++;
@@ -462,8 +431,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
                 }
             }
         });
-
-        timer.setInitialDelay(5000);
+        timer.setInitialDelay(3000);
         timer.start();
         finishOrder();
     }
@@ -480,7 +448,6 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             }
         }
         return itemSearch;
-
     }
 
     @Override
@@ -496,8 +463,8 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             gutils.background(this);
             System.out.println("Switched to Home Menu!");
         } else if (e.getSource() == continueButton) {
-            gutils.switchPanel(this, menu(categories[0]));
-            System.out.println("Continuing to order!");
+            System.out.println(choosenCategory);
+            gutils.switchPanel(this, menu(choosenCategory));
         } else if (cmd.contains(",")) {
             Product p = searchProduct(cmd);
             if (p != null) {
@@ -505,6 +472,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             }
             System.out.println(cmd);
         } else if (cmd.contains("*")) {
+            choosenCategory = selectedCategory;
             gutils.switchPanel(this, menu(selectedCategory));
         } else if (e.getSource() == addToCart) {
             addToCartItem(cmd);

@@ -1,11 +1,12 @@
 package allynn.alvarico;
 
+import allynn.alvarico.gui.GraphicUtilities;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Waiter extends Thread {
     private JFrame frame;
@@ -18,11 +19,13 @@ public class Waiter extends Thread {
     private ConcurrentHashMap<Integer, ArrayList<OrderItem>> orderQueue;
     private boolean newOrder;
     private Chef chef;
+    private GraphicUtilities gUtils;
 
     public Waiter(Font font, int x, int y) {
         this.font = font;
         this.orderQueue = new ConcurrentHashMap<>();
         this.newOrder = false;
+        gUtils = new GraphicUtilities(font, WIDTH, HEIGHT);
         initializeGUI(x, y);
     }
     public void setChef(Chef chef) {
@@ -40,9 +43,7 @@ public class Waiter extends Thread {
         mainPanel.setBackground(Color.WHITE);
 
         JLabel headerLabel = new JLabel("Current Orders", SwingConstants.CENTER);
-        headerLabel.setFont(font.deriveFont(24f));
-        headerLabel.setBackground(Color.RED);
-        headerLabel.setOpaque(true);
+        gUtils.setComponentUI(headerLabel, font.deriveFont(24f), Color.RED, true);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         ordersPanel = new JPanel(new GridLayout(1, 2, 10, 0));
@@ -53,10 +54,7 @@ public class Waiter extends Thread {
         leftPanel.setBackground(Color.WHITE);
 
         JLabel preparingHeader = new JLabel("Preparing", SwingConstants.CENTER);
-        preparingHeader.setFont(font);
-        preparingHeader.setBackground(Color.LIGHT_GRAY);
-        preparingHeader.setForeground(Color.WHITE);
-        preparingHeader.setOpaque(true);
+        gUtils.setComponentUI(preparingHeader, font, Color.LIGHT_GRAY, true);
         preparingHeader.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
         preparingPanel = new JPanel();
@@ -71,10 +69,8 @@ public class Waiter extends Thread {
         rightPanel.setBackground(Color.WHITE);
 
         JLabel collectionHeader = new JLabel("Collection", SwingConstants.CENTER);
-        collectionHeader.setFont(font);
-        collectionHeader.setBackground(Color.DARK_GRAY);
+        gUtils.setComponentUI(collectionHeader, font, Color.DARK_GRAY, true);
         collectionHeader.setForeground(Color.WHITE);
-        collectionHeader.setOpaque(true);
         collectionHeader.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
 
         collectionPanel = new JPanel();
@@ -98,21 +94,26 @@ public class Waiter extends Thread {
     public synchronized void addOrder(Integer orderNumber, ArrayList<OrderItem> items) {
         orderQueue.put(orderNumber, items);
         newOrder = true;
-        this.notify();
+        this.notify(); // this will wake the waiter class
 
-        // Wait until GUI shows the receipt before displaying order
-        Timer orderDisplayTimer = new Timer(8000, e -> { // 8 seconds to account for receipt display
+        updateOrdersDisplay();
+
+//        if (chef.isAlive()){
+//            System.out.println("kitchen is operating");
+//            chef.receiveOrder(orderNumber, items);
+//        }
+
+
+        Timer orderDisplayTimer = new Timer(1000, evt -> {
             updateOrdersDisplay();
-
-            // Send to chef after displaying order
-            Timer chefTimer = new Timer(5000, e2 -> {
+            Timer chefTimer = new Timer(1000, evt2 -> {
                 chef.receiveOrder(orderNumber, items);
-                ((Timer) e2.getSource()).stop();
+                ((Timer) evt2.getSource()).stop();
             });
             chefTimer.setRepeats(false);
             chefTimer.start();
 
-            ((Timer) e.getSource()).stop();
+            ((Timer) evt.getSource()).stop();
         });
         orderDisplayTimer.setRepeats(false);
         orderDisplayTimer.start();
@@ -120,41 +121,25 @@ public class Waiter extends Thread {
 
     public void orderCompleted(Integer orderNumber) {
         SwingUtilities.invokeLater(() -> {
-            // Move order to collection panel
             JLabel collectLabel = new JLabel("Order #" + orderNumber);
-            collectLabel.setFont(font);
+            gUtils.setComponentUI(collectLabel, font, new Color(220, 255, 220), true);
             collectLabel.setHorizontalAlignment(SwingConstants.CENTER);
             collectLabel.setBorder(new LineBorder(new Color(0, 200, 0), 2));
-            collectLabel.setBackground(new Color(220, 255, 220));
-            collectLabel.setOpaque(true);
 
-            // Remove from preparing panel first
-            Component[] components = preparingPanel.getComponents();
-            for (Component component : components) {
-                if (component instanceof JLabel) {
-                    JLabel label = (JLabel) component;
-                    if (label.getText().equals(String.format("Order #%03d", orderNumber))) {
-                        preparingPanel.removeAll(); // Remove all components
-                        preparingPanel.revalidate();
-                        preparingPanel.repaint();
-                        break;
-                    }
-                }
-            }
+            orderQueue.remove(orderNumber);
+            updateOrdersDisplay();
 
-            // Add to collection panel
+            gUtils.updatePreparringWindow(preparingPanel, orderNumber);
+
             collectionPanel.add(collectLabel);
             Component spacer = Box.createRigidArea(new Dimension(0, 5));
             collectionPanel.add(spacer);
-            collectionPanel.revalidate();
-            collectionPanel.repaint();
+            gUtils.refreshComponent(collectionPanel);
 
-            // Remove from collection panel after 5 seconds
             Timer removalTimer = new Timer(5000, e -> {
                 collectionPanel.remove(collectLabel);
                 collectionPanel.remove(spacer);
-                collectionPanel.revalidate();
-                collectionPanel.repaint();
+                gUtils.refreshComponent(collectionPanel);
                 ((Timer) e.getSource()).stop();
             });
             removalTimer.setRepeats(false);
@@ -172,25 +157,21 @@ public class Waiter extends Thread {
                 preparingPanel.add(noOrderLabel);
             } else {
                 orderQueue.forEach((orderNum, items) -> {
-                        JLabel orderLabel = new JLabel(String.format("Order #%03d", orderNum));
-                        orderLabel.setFont(font);
-                        orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                        orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
-                        orderLabel.setBackground(Color.WHITE);
-                        orderLabel.setOpaque(true);
-                        preparingPanel.add(orderLabel);
-                        preparingPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+                    JLabel orderLabel = new JLabel(String.format("Order #%03d", orderNum));
+                    gUtils.setComponentUI(orderLabel, font, Color.WHITE, true);
+                    orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
+                    preparingPanel.add(orderLabel);
+                    preparingPanel.add(Box.createRigidArea(new Dimension(0, 5)));
                 });
             }
-            preparingPanel.revalidate();
-            preparingPanel.repaint();
+            gUtils.refreshComponent(preparingPanel);
         });
     }
 
-
     public synchronized void waitForOrder() throws InterruptedException {
         while (!newOrder) {
-            wait();
+            this.wait();
         }
         newOrder = false;
     }

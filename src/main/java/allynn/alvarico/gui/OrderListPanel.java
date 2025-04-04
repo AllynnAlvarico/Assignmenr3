@@ -1,6 +1,8 @@
 package allynn.alvarico.gui;
 
 import allynn.alvarico.OrderItem;
+import allynn.alvarico.customs.CustomButton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -15,9 +17,13 @@ public class OrderListPanel extends JPanel {
     private JLabel totalPriceLabel;
     private JLabel totalPrepTimeLabel;
     private final Color bgWhite;
-    private JButton removeButton;
+    private CustomButton removeButton;
+    GraphicUtilities gUtils;
+    Font font;
 
     public OrderListPanel(Font f, ArrayList<OrderItem> customerOrder, Color white) {
+        gUtils = new GraphicUtilities();
+        font = f;
         this.customerOrder = customerOrder;
         bgWhite = white;
         setLayout(new BorderLayout(5, 5));
@@ -57,11 +63,10 @@ public class OrderListPanel extends JPanel {
         totalPriceLabel.setFont(smallerFont);
         totalPrepTimeLabel.setFont(smallerFont);
 
-        totalsPanel.add(totalItemsLabel);
-        totalsPanel.add(Box.createVerticalStrut(5));
-        totalsPanel.add(totalPriceLabel);
-        totalsPanel.add(Box.createVerticalStrut(5));
-        totalsPanel.add(totalPrepTimeLabel);
+        gUtils.addComponent(
+                totalsPanel, totalItemsLabel, Box.createVerticalStrut(5),
+                totalPriceLabel, Box.createVerticalStrut(5), totalPrepTimeLabel
+        );
 
         return totalsPanel;
     }
@@ -104,34 +109,27 @@ public class OrderListPanel extends JPanel {
         JLabel lblTotal = new JLabel(String.format("€%.2f", orderItem.getTotal()));
         lblTotal.setPreferredSize(new Dimension(70, 30));
 
-        removeButton = new JButton("Remove");
-        removeButton.setPreferredSize(new Dimension(80, 30));
+        removeButton = new CustomButton("Remove");
+
+        removeButton.setFont(font.deriveFont(10f));
+        removeButton.setPreferredSize(new Dimension(80, 10));
         removeButton.setActionCommand("remove" + orderItem.getProduct().productID());
 
         removeButton.addActionListener(e -> {
             removeOrderItem(orderItem);
         });
-
-        panel.add(lblName);
-        panel.add(Box.createHorizontalStrut(10));
-        panel.add(lblAmount);
-        panel.add(Box.createHorizontalStrut(10));
-        panel.add(lblTotal);
-        panel.add(Box.createHorizontalStrut(10));
-        panel.add(removeButton);
-        panel.add(Box.createHorizontalGlue());
-
-        orderPanel.add(panel);
-        orderPanel.add(Box.createVerticalStrut(5));
+        gUtils.addComponent(panel, lblName,
+                Box.createHorizontalStrut(10), lblAmount,
+                Box.createHorizontalStrut(10), lblTotal,
+                Box.createHorizontalStrut(10), removeButton,
+                Box.createHorizontalGlue());
+        gUtils.addComponent(orderPanel, panel, Box.createVerticalStrut(5));
         orderPanel.setBackground(bgWhite);
-
         updateTotals();
-
-        revalidate();
-        repaint();
+        gUtils.refreshComponent(this);
     }
 
-    public JButton getRemoveCmd(){
+    public CustomButton getRemoveCmd(){
         return removeButton;
     }
 
@@ -152,7 +150,6 @@ public class OrderListPanel extends JPanel {
             }
         }
         updateTotals();
-        revalidate();
-        repaint();
+        gUtils.refreshComponent(this);
     }
 }

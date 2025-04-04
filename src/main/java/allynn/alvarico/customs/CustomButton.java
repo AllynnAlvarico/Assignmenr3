@@ -6,15 +6,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class CustomButton extends JButton {
-    private final Color normalColor;
-    private final Color hoverColor;
-    private final Color clickColor;
-
-    public CustomButton(String text, String hexMaintone, String hexHovertone, String hexClicktone) {
+    private Color normalColor;
+    private Color hoverColor;
+    private Color clickColor;
+    public CustomButton(String text) {
         super(text);
-        normalColor = Color.decode(hexMaintone);
-        hoverColor = Color.decode(hexHovertone);
-        clickColor = Color.decode(hexClicktone);
+        normalColor = Color.decode("#bf0c0c");
+        hoverColor = Color.decode("#ffc600");
+        clickColor = Color.decode("#e76a05");
 
         setFont(new Font("Comic Sans MS", Font.BOLD, 18));
         setForeground(Color.WHITE);
@@ -47,6 +46,14 @@ public class CustomButton extends JButton {
                 setBackground(hoverColor);
             }
         });
+    }
+
+    public void defaultSettings(){
+        setFocusPainted(false);
+        setBackground(getBackground());
+        setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+        setPreferredSize(new Dimension(220, 40));
+        setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 
     @Override

@@ -13,20 +13,21 @@ public class GraphicUtilities {
     private int WIDTH;
     private int HEIGHT;
     private Font f;
-    private final Color white = Color.WHITE;
+
+    public GraphicUtilities(){
+
+    }
 
     public GraphicUtilities(Font font, int byRef_width, int byRef_height){
         HEIGHT = byRef_height;
         WIDTH = byRef_width;
         f = font;
-
     }
 
     public JPanel header(String selectedCategory){
         JPanel headerPanel = new JPanel();
         headerPanel.setPreferredSize(new Dimension(WIDTH, 100));
-        headerPanel.setBackground(Color.WHITE);
-
+        headerPanel.setBackground(getBackground());
 
         JLabel headerLabel = new JLabel(selectedCategory);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
@@ -42,7 +43,7 @@ public class GraphicUtilities {
 
         thumbnail.setIcon(img);
         thumbnail.setPreferredSize(new Dimension(WIDTH / 4, 100));
-        thumbnail.setBackground(Color.WHITE);
+        thumbnail.setBackground(getBackground());
         thumbnail.setCursor(new Cursor(Cursor.HAND_CURSOR));
         thumbnail.setFocusable(false);
         thumbnail.setContentAreaFilled(false);
@@ -77,10 +78,11 @@ public class GraphicUtilities {
         target.setPreferredSize(new Dimension(200, HEIGHT * 2));
     }
 
-    public void mainPanelSetup(JPanel mainPanel, JPanel north, JScrollPane west, JScrollPane center, JPanel south){
+    public void mainPanelSetup(JPanel mainPanel, String str_north, JScrollPane west, JScrollPane center, JPanel south){
         mainPanel.setSize(WIDTH, HEIGHT);
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.add(north, BorderLayout.NORTH);
+
+        mainPanel.add(header(str_north), BorderLayout.NORTH);
         mainPanel.add(west, BorderLayout.WEST);
         mainPanel.add(center, BorderLayout.CENTER);
         mainPanel.add(south, BorderLayout.SOUTH);
@@ -90,7 +92,7 @@ public class GraphicUtilities {
         JPanel panel = new JPanel();
         panel.setBounds(0, 0, WIDTH, HEIGHT);
         panel.setLayout(new BorderLayout());
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(getBackground());
 
         JLabel messageLabel = new JLabel("<html><div style='text-align: center;'>Please collect the receipt<br>and proceed to the cashier</div></html>", SwingConstants.CENTER);
         messageLabel.setFont(f);
@@ -143,9 +145,6 @@ public class GraphicUtilities {
         numberLabel.setFont(numberLabel.getFont().deriveFont(48f));
         numberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
-
-
         panel.add(Box.createVerticalStrut(60));
         panel.add(thankYouLabel);
         panel.add(followUpLabel);
@@ -158,10 +157,38 @@ public class GraphicUtilities {
         return panel;
     }
 
+    public void refreshComponent(JComponent component){
+        component.revalidate();
+        component.repaint();
+    }
 
+    public void setComponentUI(JComponent component, Font font, Color background, boolean opaque){
+        component.setFont(font);
+        component.setBackground(background);
+        component.setOpaque(opaque);
+    }
 
+    public void addComponent(JPanel panel, Component... components) {
+        for (Component component : components) {
+            panel.add(component);
+        }
+    }
 
     public Color getBackground(){
         return Color.WHITE;
+    }
+
+    public void updatePreparringWindow(JPanel panel, int orderNumber){
+        Component[] components = panel.getComponents();
+        for (Component component : components) {
+            if (component instanceof JLabel) {
+                JLabel label = (JLabel) component;
+                if (label.getText().equals(String.format("Order #%03d", orderNumber))) {
+                    label.removeAll();
+                    refreshComponent(label);
+                    break;
+                }
+            }
+        }
     }
 }
