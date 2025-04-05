@@ -9,11 +9,14 @@ public class Restaurant {
 
     private final Color whiteBackgrond = Color.WHITE;
     private Font comicSansMS = new Font("Comic Sans MS", Font.BOLD, 18);
+    private String iconPath = "resource\\images\\icon.png";
 
     public Restaurant(){
         FileManagement fileManagement = new FileManagement();
         fileManagement.setProductData();
-        UserGraphicsInterface window = new UserGraphicsInterface(fileManagement.getProducts(), comicSansMS, whiteBackgrond);
+
+        UserGraphicsInterface window = new UserGraphicsInterface(
+                fileManagement.getProducts(), comicSansMS, whiteBackgrond, iconPath);
     }
 
     public static void main(String[] args) {

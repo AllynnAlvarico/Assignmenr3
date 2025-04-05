@@ -15,7 +15,9 @@ public class GraphicUtilities {
     private Font f;
 
     public GraphicUtilities(){
-
+        WIDTH = 800;
+        HEIGHT = 600;
+        f = new Font("Comic Sans MS", Font.PLAIN, 18);
     }
 
     public GraphicUtilities(Font font, int byRef_width, int byRef_height){
@@ -120,75 +122,66 @@ public class GraphicUtilities {
         JLabel followUpLabel = new JLabel("number below and wait for it to");
         JLabel continueLabel = new JLabel("be called");
 
-        thankYouLabel.setFont(f);
-        followUpLabel.setFont(f);
-        continueLabel.setFont(f);
-        thankYouLabel.setFont(thankYouLabel.getFont().deriveFont(32f));
-        followUpLabel.setFont(thankYouLabel.getFont().deriveFont(32f));
-        continueLabel.setFont(thankYouLabel.getFont().deriveFont(32f));
-
-        thankYouLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        followUpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        continueLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setComponentFont(thankYouLabel, f, 32);
+        setComponentFont(followUpLabel, f, 32);
+        setComponentFont(continueLabel, f, 32);
 
         JLabel infoLabel = new JLabel("Your order number is");
-        infoLabel.setFont(f);
-        infoLabel.setFont(infoLabel.getFont().deriveFont(24f));
-        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setComponentFont(infoLabel, f, 24);
 
         Integer lastOrderNumber = order.keySet().stream()
                 .max(Integer::compareTo)
                 .orElse(0);
 
         JLabel numberLabel = new JLabel(String.format("%03d", lastOrderNumber));
-        numberLabel.setFont(f);
-        numberLabel.setFont(numberLabel.getFont().deriveFont(48f));
-        numberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setComponentFont(numberLabel, f, 48);
 
-        panel.add(Box.createVerticalStrut(60));
-        panel.add(thankYouLabel);
-        panel.add(followUpLabel);
-        panel.add(continueLabel);
-        panel.add(Box.createVerticalStrut(40));
-        panel.add(infoLabel);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(numberLabel);
-
+        addComponent(panel,
+                Box.createVerticalStrut(60), thankYouLabel, followUpLabel, continueLabel,
+                Box.createVerticalStrut(40), infoLabel,
+                Box.createVerticalStrut(10), numberLabel);
         return panel;
     }
 
-    public void refreshComponent(JComponent component){
-        component.revalidate();
-        component.repaint();
-    }
-
-    public void setComponentUI(JComponent component, Font font, Color background, boolean opaque){
-        component.setFont(font);
-        component.setBackground(background);
-        component.setOpaque(opaque);
-    }
-
-    public void addComponent(JPanel panel, Component... components) {
-        for (Component component : components) {
-            panel.add(component);
+    private void setComponentFont(JComponent component, Font font, float size){
+            component.setFont(font);
+            component.setFont(component.getFont().deriveFont(size));
+            component.setAlignmentX(Component.CENTER_ALIGNMENT);
         }
-    }
 
-    public Color getBackground(){
-        return Color.WHITE;
-    }
+        public void refreshComponent(JComponent component){
+            component.revalidate();
+            component.repaint();
+        }
 
-    public void updatePreparringWindow(JPanel panel, int orderNumber){
-        Component[] components = panel.getComponents();
-        for (Component component : components) {
-            if (component instanceof JLabel) {
-                JLabel label = (JLabel) component;
-                if (label.getText().equals(String.format("Order #%03d", orderNumber))) {
-                    label.removeAll();
-                    refreshComponent(label);
-                    break;
+        public void setComponentUI(JComponent component, Font font, Color background, Color foreGround,boolean opaque){
+            component.setFont(font);
+            component.setBackground(background);
+            component.setForeground(foreGround);
+            component.setOpaque(opaque);
+        }
+
+        public void addComponent(JPanel panel, Component...components){
+            for (Component component : components) {
+                panel.add(component);
+            }
+        }
+
+        public Color getBackground () {
+            return Color.WHITE;
+        }
+
+        public void updatePreparringWindow (JPanel panel,int orderNumber){
+            Component[] components = panel.getComponents();
+            for (Component component : components) {
+                if (component instanceof JLabel) {
+                    JLabel label = (JLabel) component;
+                    if (label.getText().equals(String.format("Order #%03d", orderNumber))) {
+                        label.removeAll();
+                        refreshComponent(label);
+                        break;
+                    }
                 }
             }
         }
     }
-}

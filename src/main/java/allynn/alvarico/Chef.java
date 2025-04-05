@@ -14,40 +14,43 @@ public class Chef extends Thread {
     private JFrame frame;
     private JPanel ordersPanel;
     private JLabel timerLabel;
-    private final int WIDTH = 400;
-    private final int HEIGHT = 600;
+    private final int WIDTH = 400, HEIGHT = 600;
     private final Font font;
     private ConcurrentHashMap<Integer, ArrayList<OrderItem>> orderQueue;
     private Waiter waiter;
     private boolean isProcessing;
     private Integer currentOrder;
     private GraphicUtilities gUtils;
+    private SimulationClock clock;
 
-    public Chef(int x, int y) {
+    public Chef(int x, int y, String iconDirectory) {
 
         this.font = new Font("Comic Sans MS", Font.BOLD, 18);
         this.orderQueue = new ConcurrentHashMap<>();
         this.isProcessing = false;
         gUtils = new GraphicUtilities(font, WIDTH, HEIGHT);
-        initializeGUI(x, y);
+        clock = new SimulationClock();
+        initializeGUI(x, y, iconDirectory);
     }
 
     public void setWaiter(Waiter waiter) {
         this.waiter = waiter;
     }
 
-    private void initializeGUI(int x, int y) {
+    private void initializeGUI(int x, int y, String iconDirectory) {
         frame = new JFrame("Kitchen Display");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocation(x, y);
         frame.setResizable(false);
+        frame.setIconImage(Toolkit.getDefaultToolkit()
+                .getImage(iconDirectory));
 
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
 
         JLabel headerLabel = new JLabel("Current Order", SwingConstants.CENTER);
-        gUtils.setComponentUI(headerLabel, font.deriveFont(24f), new Color(255, 198, 0), true);
+        gUtils.setComponentUI(headerLabel, font.deriveFont(24f), new Color(255, 198, 0), Color.WHITE,true);
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
         ordersPanel = new JPanel();
@@ -71,14 +74,15 @@ public class Chef extends Thread {
     }
 
     public synchronized void receiveOrder(Integer orderNumber, ArrayList<OrderItem> items) {
-        if (currentOrder != null) {
+        if (isProcessing || currentOrder != null) {
             orderQueue.put(orderNumber, items);
             return;
         }
 
+        isProcessing = true;
         currentOrder = orderNumber;
         orderQueue.put(orderNumber, items);
-        if (!isProcessing){
+
             SwingUtilities.invokeLater(() -> {
                 ordersPanel.removeAll();
                 JLabel preparingLabel = new JLabel("Preparing Order #" + orderNumber);
@@ -86,7 +90,7 @@ public class Chef extends Thread {
                 ordersPanel.add(preparingLabel);
                 gUtils.refreshComponent(ordersPanel);
 
-                Timer initialDelay = new Timer(1000, e -> {
+                Timer initialDelay = new Timer(SimulationClock.seconds(1), e -> {
                     startCountdown(orderNumber, items);
                     ((Timer) e.getSource()).stop();
                 });
@@ -94,13 +98,17 @@ public class Chef extends Thread {
                 initialDelay.start();
             });
             currentOrder = null;
-        }
+            synchronized (this) {
+                notify();
+            }
+
 
     }
 
     private void startCountdown(Integer orderNumber, ArrayList<OrderItem> items) {
+
         int totalTime = calculatePrepTime(items);
-        new Timer(1000, new ActionListener() {
+        new Timer(SimulationClock.chefsTimer, new ActionListener() {
             int timeLeft = totalTime;
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -116,12 +124,12 @@ public class Chef extends Thread {
     }
 
     private void updateOrdersDisplay() {
-        new Timer(5000, evt -> {
+        new Timer(SimulationClock.chefsDelayTimer, evt -> {
             SwingUtilities.invokeLater(() -> {
                 ordersPanel.removeAll();
                 if (currentOrder != null) {
                     JLabel orderLabel = new JLabel(String.format("Preparing Order #%03d", currentOrder));
-                    gUtils.setComponentUI(orderLabel, font, Color.WHITE, true);
+                    gUtils.setComponentUI(orderLabel, font, Color.WHITE, Color.BLACK,true);
 
                     orderLabel.setHorizontalAlignment(SwingConstants.CENTER);
                     orderLabel.setBorder(new LineBorder(new Color(255, 198, 0), 2));
@@ -160,45 +168,40 @@ public class Chef extends Thread {
 
     private void prepareOrder(Integer orderNumber, ArrayList<OrderItem> items) {
 
-            try {
-                Thread.sleep(2000);
-                int prepTime = calculatePrepTime(items);
-                System.out.println("Preparing Order #" + orderNumber + " (Prep time: " + prepTime + " seconds)");
+        clock.sleep(2);
+        int prepTime = calculatePrepTime(items);
+        System.out.println("Preparing Order #" + orderNumber + " (Prep time: " + prepTime + " seconds)");
 
-                for (int i = prepTime; i > 0; i--) {
-                    updateTimer(i);
-                    Thread.sleep(1000);
-                }
+        for (int i = prepTime; i > 0; i--) {
+            updateTimer(i);
+            clock.sleep(1);
+        }
 
-                orderQueue.remove(orderNumber);
-//                currentOrder = null;
-                updateOrdersDisplay();
+        orderQueue.remove(orderNumber);
+        updateOrdersDisplay();
 
-                synchronized (waiter) {
-                    waiter.orderCompleted(orderNumber);
-                    waiter.notify();
-                }
+        synchronized (waiter) {
+            waiter.orderCompleted(orderNumber);
+            waiter.notify();
+        }
 
-                isProcessing = false;
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        isProcessing = false;
     }
 
     private void updateCountdownDisplay(Integer orderNumber, int timeLeft) {
-        SwingUtilities.invokeLater(() -> {
-            ordersPanel.removeAll();
-            JLabel orderLabel = new JLabel("Preparing Order #" + orderNumber);
-            orderLabel.setFont(font);
-            ordersPanel.add(orderLabel);
+            SwingUtilities.invokeLater(() -> {
+                ordersPanel.removeAll();
+                JLabel orderLabel = new JLabel("Preparing Order #" + orderNumber);
+                orderLabel.setFont(font);
+                ordersPanel.add(orderLabel);
 
-            JLabel timerLabel = new JLabel("Time remaining: " + timeLeft + " seconds");
-            timerLabel.setFont(font);
-            timerLabel.setForeground(Color.RED);
-            ordersPanel.add(timerLabel);
+                JLabel timerLabel = new JLabel("Time remaining: " + timeLeft + " seconds");
+                timerLabel.setFont(font);
+                timerLabel.setForeground(Color.RED);
+                ordersPanel.add(timerLabel);
 
-            gUtils.refreshComponent(ordersPanel);
-        });
+                gUtils.refreshComponent(ordersPanel);
+            });
     }
 
     private void orderCompleted(Integer orderNumber) {
@@ -209,21 +212,17 @@ public class Chef extends Thread {
             ordersPanel.add(completedLabel);
             gUtils.refreshComponent(ordersPanel);
 
-            Timer timer = new Timer(2000, e -> {
+            Timer timer = new Timer(clock.seconds(2), e -> {
                 synchronized (waiter) {
                     waiter.orderCompleted(orderNumber);
                     waiter.notify();
+                    orderQueue.remove(orderNumber);
 
                     ordersPanel.removeAll();
-                    if (orderQueue.isEmpty()) {
-                        JLabel noOrderLabel = new JLabel("No order in preparation");
-                        noOrderLabel.setFont(font);
-                        ordersPanel.add(noOrderLabel);
-                    } else {
-                        currentOrder = orderQueue.keys().nextElement();
-                        ArrayList<OrderItem> nextItems = orderQueue.get(currentOrder);
-                        receiveOrder(currentOrder, nextItems);
-                    }
+                    isProcessing = false;
+                    currentOrder = null;
+
+                    getNextOrder();
                     gUtils.refreshComponent(ordersPanel);
                     ((Timer) e.getSource()).stop();
                 }
@@ -231,6 +230,18 @@ public class Chef extends Thread {
             timer.setRepeats(false);
             timer.start();
         });
+    }
+
+    private void getNextOrder(){
+        if (!orderQueue.isEmpty()) {
+            Integer nextOrder = orderQueue.keys().nextElement();
+            ArrayList<OrderItem> nextItems = orderQueue.get(nextOrder);
+            receiveOrder(nextOrder, nextItems);
+        } else {
+            JLabel noOrderLabel = new JLabel("No order in preparation");
+            noOrderLabel.setFont(font);
+            ordersPanel.add(noOrderLabel);
+        }
     }
 
     @Override
