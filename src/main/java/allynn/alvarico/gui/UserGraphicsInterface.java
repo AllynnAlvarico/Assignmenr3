@@ -6,6 +6,7 @@ import allynn.alvarico.SimulationClock;
 import allynn.alvarico.Waiter;
 import allynn.alvarico.customs.CustomButton;
 import allynn.alvarico.product.Product;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -390,7 +391,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
                 olp.addOrderItem(orderItem);
                 removeProduct = olp.getRemoveCmd();
                 removeProduct.addActionListener(this);
-                System.out.println("Added to cart: " + p.productName());
+//                System.out.println("Added to cart: " + p.productName());
             }
         }
 
@@ -407,6 +408,14 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         allOrder.put(orderNumber, new ArrayList<>(basket));
         waiter.addOrder(orderNumber, new ArrayList<>(basket));
         orderNumber++;
+        terminalLogs();
+    }
+
+    private void terminalLogs(){
+        System.out.printf("========================== %s ==========================\n", this.getClass());
+        System.out.println("Order Confirmed");
+        System.out.printf("Thread Name: %s\n", this.getName());
+        System.out.println("Passing to Waiter class");
     }
 
     private void handlePaymentCompletion() {
@@ -452,12 +461,12 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
         String selectedCategory = cmd.substring(1);
         if (e.getSource() == start) {
             gutils.switchPanel(this, menu(categories[0]));
-            System.out.println("Switched to Food Menu!");
+//            System.out.println("Switched to Food Menu!");
         } else if (e.getSource() == cancelButton) {
             resetOrder();
             gutils.switchPanel(this, start());
             gutils.background(this);
-            System.out.println("Switched to Home Menu!");
+//            System.out.println("Switched to Home Menu!");
         } else if (e.getSource() == continueButton) {
             System.out.println(choosenCategory);
             gutils.switchPanel(this, menu(choosenCategory));
@@ -466,7 +475,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
             if (p != null) {
                 gutils.switchPanel(this, itemDisplay(p.category(), p));
             }
-            System.out.println(cmd);
+//            System.out.println(cmd);
         } else if (cmd.contains("*")) {
             choosenCategory = selectedCategory;
             gutils.switchPanel(this, menu(selectedCategory));
@@ -501,7 +510,7 @@ public class UserGraphicsInterface extends JFrame implements ActionListener {
                 }
             }
         } else if (e.getSource() == confirmButton){
-            System.out.println("Finish Order");
+//            System.out.println("Finish Order");
             gutils.switchPanel(this, paymentSelectionMethod());
         } else if (e.getActionCommand().equalsIgnoreCase("Pay by Card")){
             gutils.switchPanel(this, cardPaymentPanel());

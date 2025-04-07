@@ -104,9 +104,16 @@ public class Waiter extends Thread {
             updateOrdersDisplay();
             orderDisplayTimer(orderNumber, items);
             ((Timer) e.getSource()).stop();
+
         });
         displayDelay.setRepeats(false);
         displayDelay.start();
+    }
+
+    private void terminalLog(){
+        System.out.printf("========================== %s ==========================", this.getName());
+        System.out.println("Order received from kiosk");
+        System.out.println("Passing it to the chef class");
     }
 
     private void orderDisplayTimer(Integer orderNumber, ArrayList<OrderItem> items) {
@@ -185,7 +192,6 @@ public class Waiter extends Thread {
         while (!Thread.interrupted()) {
             try {
                 waitForOrder();
-//                Thread.sleep(5000);
                 clock.sleep(SimulationClock.simWaiterDelay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

@@ -100,9 +100,14 @@ public class Chef extends Thread {
             currentOrder = null;
             synchronized (this) {
                 notify();
+                terminalLog();
             }
+    }
 
-
+    public void terminalLog(){
+        System.out.printf("========================== %s ==========================\n", this.getClass());
+        System.out.printf("Thread Name: %s\n", this.getName());
+        System.out.println("Order received from " + waiter.getName());
     }
 
     private void startCountdown(Integer orderNumber, ArrayList<OrderItem> items) {
@@ -230,6 +235,11 @@ public class Chef extends Thread {
             timer.setRepeats(false);
             timer.start();
         });
+
+        System.out.printf("========================== %s ==========================\n", this.getClass());
+        System.out.println("Finish Preparation");
+        System.out.printf("Thread Name: %s\n", this.getName());
+        System.out.println("Passing to " + waiter.getClass());
     }
 
     private void getNextOrder(){
