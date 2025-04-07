@@ -6,7 +6,6 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class FileManagement {
-
     String filepath = "resource\\products\\ProductDataBase.csv";
     private final String[] headers = {"pkey", "name", "category", "price", "prepTime", "path"};
     private String line;
@@ -54,6 +53,7 @@ public class FileManagement {
     public ArrayList<Product> getProducts() {
         return products;
     }
+
 
     public void fileInputStream() {
         String message = "Hello World";
